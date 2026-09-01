@@ -1201,3 +1201,521 @@ A dropdown menu shows a hidden submenu when the user hovers over (or clicks) a p
 3. It starts with `display: none` — invisible and takes up no space.
 4. `.dropdown:hover .dropdown-menu` uses the descendant combinator to reveal it when the parent is hovered.
 5. `z-index: 100` keeps it above other page content.
+
+---
+
+## Navigation Bar
+
+A navbar is the horizontal (or vertical) bar that holds your site's main links. It is built from a `<nav>` and an `<ul>` — the dropdown menu section showed a basic version. Here is a more complete, real-world horizontal navbar.
+
+### HTML
+```html
+<nav class="navbar">
+  <div class="nav-logo">
+    <a href="#">MySite</a>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+```
+
+### CSS
+```css
+.navbar {
+  display: flex;
+  justify-content: space-between;  /* logo on left, links on right */
+  align-items: center;
+  background-color: #1a1a2e;
+  padding: 0 40px;
+  height: 64px;
+}
+
+.nav-logo a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  display: block;
+  color: #ccc;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-links a:hover {
+  background-color: #ffffff20;  /* white at low opacity */
+  color: white;
+}
+
+.nav-links a.active {
+  background-color: royalblue;
+  color: white;
+}
+```
+
+### Sticky navbar
+
+To make the navbar stick to the top when scrolling:
+
+```css
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+```
+
+---
+
+## Website Layout
+
+A standard webpage is built from a few key sections stacked vertically. Here is the full structure using semantic HTML and CSS.
+
+### HTML
+```html
+<body>
+
+  <header class="site-header">
+    <nav class="navbar"><!-- navbar here --></nav>
+  </header>
+
+  <main class="site-main">
+
+    <section class="hero">
+      <h1>Welcome to My Site</h1>
+      <p>A short tagline goes here.</p>
+      <a href="#" class="btn">Get Started</a>
+    </section>
+
+    <section class="content-section">
+      <div class="container">
+        <h2>About</h2>
+        <p>Content goes here.</p>
+      </div>
+    </section>
+
+    <section class="cards-section">
+      <div class="container">
+        <div class="card-grid">
+          <div class="card">Card 1</div>
+          <div class="card">Card 2</div>
+          <div class="card">Card 3</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 MySite. All rights reserved.</p>
+  </footer>
+
+</body>
+```
+
+### CSS
+```css
+/* Reset and base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Centered container — max width with auto margin */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Hero section */
+.hero {
+  background-color: #1a1a2e;
+  color: white;
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 32px;
+  color: #ccc;
+}
+
+.btn {
+  display: inline-block;
+  padding: 14px 32px;
+  background-color: royalblue;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.btn:hover {
+  background-color: #2541b2;
+}
+
+/* Content section */
+.content-section {
+  padding: 80px 0;
+}
+
+/* Card grid */
+.cards-section {
+  padding: 80px 0;
+  background-color: #f5f5f5;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.card {
+  background-color: white;
+  padding: 32px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Footer */
+.site-footer {
+  background-color: #1a1a2e;
+  color: #aaa;
+  text-align: center;
+  padding: 32px 20px;
+}
+```
+
+This layout follows a pattern used in nearly every real website — a centered `.container` inside full-width sections. The section takes up the full viewport width (for background colors), but the content inside stays readable with a max-width.
+
+---
+
+## Image Gallery
+
+A gallery lays out images in a grid. CSS Grid makes this clean and easy.
+
+### HTML
+```html
+<div class="gallery">
+  <img src="img1.jpg" alt="Photo 1" />
+  <img src="img2.jpg" alt="Photo 2" />
+  <img src="img3.jpg" alt="Photo 3" />
+  <img src="img4.jpg" alt="Photo 4" />
+  <img src="img5.jpg" alt="Photo 5" />
+  <img src="img6.jpg" alt="Photo 6" />
+</div>
+```
+
+### CSS — uniform grid
+```css
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);  /* 3 equal columns */
+  gap: 12px;
+}
+
+.gallery img {
+  width: 100%;           /* fill the column */
+  height: 250px;
+  object-fit: cover;     /* crop to fill without stretching */
+  border-radius: 6px;
+  display: block;
+}
+```
+
+`object-fit: cover` is the key here — it makes every image fill its cell uniformly, cropping if needed, instead of distorting.
+
+### Hover effect
+```css
+.gallery img {
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.gallery img:hover {
+  transform: scale(1.03);
+  opacity: 0.85;
+}
+```
+
+### Responsive gallery — auto-fit
+```css
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+```
+
+`auto-fit` with `minmax` automatically adjusts the number of columns based on available space — no media queries needed. On a wide screen you get many columns, on mobile you get fewer.
+
+---
+
+## Icons
+
+The most common way to add icons to a webpage is with an icon library. **Font Awesome** is the most widely used.
+
+### Setup — add to your HTML `<head>`
+```html
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+```
+
+Or use the CDN from [fontawesome.com](https://fontawesome.com).
+
+### Using icons
+```html
+<i class="fa-solid fa-house"></i>        <!-- house icon -->
+<i class="fa-solid fa-user"></i>         <!-- user icon -->
+<i class="fa-solid fa-magnifying-glass"></i>  <!-- search icon -->
+<i class="fa-brands fa-github"></i>      <!-- GitHub logo -->
+<i class="fa-brands fa-instagram"></i>   <!-- Instagram logo -->
+```
+
+Icons are inserted with an `<i>` tag and the appropriate classes. They scale with font size and inherit color from their parent.
+
+### Sizing icons
+```html
+<i class="fa-solid fa-house fa-sm"></i>   <!-- small -->
+<i class="fa-solid fa-house fa-lg"></i>   <!-- large -->
+<i class="fa-solid fa-house fa-2x"></i>   <!-- 2x size -->
+<i class="fa-solid fa-house fa-3x"></i>   <!-- 3x size -->
+```
+
+Or use CSS directly:
+```css
+i {
+  font-size: 24px;
+  color: royalblue;
+}
+```
+
+### Icon with text
+```html
+<button>
+  <i class="fa-solid fa-envelope"></i> Send Email
+</button>
+```
+
+### Icons as bullet points
+```html
+<ul style="list-style: none; padding: 0;">
+  <li><i class="fa-solid fa-check" style="color: green;"></i> Feature one</li>
+  <li><i class="fa-solid fa-check" style="color: green;"></i> Feature two</li>
+</ul>
+```
+
+### Accessibility
+Icons that are purely decorative should be hidden from screen readers:
+```html
+<i class="fa-solid fa-house" aria-hidden="true"></i>
+```
+
+If the icon carries meaning on its own, add a label:
+```html
+<i class="fa-solid fa-house" aria-label="Home"></i>
+```
+
+---
+
+## Flexbox
+
+Flexbox is a layout model that arranges items in a row or column and gives you powerful control over alignment, spacing, and sizing. It works on two levels — the **container** and the **items** inside it.
+
+You turn an element into a flex container with:
+```css
+.container {
+  display: flex;
+}
+```
+All direct children of that element become **flex items**.
+
+---
+
+### Container properties
+
+#### `flex-direction` — which direction items flow
+```css
+.container {
+  flex-direction: row;            /* default — left to right */
+  flex-direction: row-reverse;    /* right to left */
+  flex-direction: column;         /* top to bottom */
+  flex-direction: column-reverse; /* bottom to top */
+}
+```
+
+#### `justify-content` — alignment along the main axis
+```css
+.container {
+  justify-content: flex-start;    /* default — items at the start */
+  justify-content: flex-end;      /* items at the end */
+  justify-content: center;        /* items centered */
+  justify-content: space-between; /* equal space between items, none at edges */
+  justify-content: space-around;  /* equal space around each item */
+  justify-content: space-evenly;  /* equal space between items and edges */
+}
+```
+
+#### `align-items` — alignment along the cross axis
+```css
+.container {
+  align-items: stretch;      /* default — items stretch to fill height */
+  align-items: flex-start;   /* items align to the top */
+  align-items: flex-end;     /* items align to the bottom */
+  align-items: center;       /* items centered vertically */
+  align-items: baseline;     /* items align by their text baseline */
+}
+```
+
+#### `flex-wrap` — whether items wrap to a new line
+```css
+.container {
+  flex-wrap: nowrap;    /* default — all items stay on one line, may overflow */
+  flex-wrap: wrap;      /* items wrap to next line when they don't fit */
+}
+```
+
+#### `gap` — space between items
+```css
+.container {
+  gap: 16px;          /* same gap in both directions */
+  gap: 16px 24px;     /* row-gap column-gap */
+}
+```
+
+---
+
+### Item properties
+
+#### `flex-grow` — how much an item grows to fill space
+```css
+.item {
+  flex-grow: 0;   /* default — does not grow */
+  flex-grow: 1;   /* grows to fill available space */
+}
+```
+
+If all items have `flex-grow: 1`, they share the space equally. If one has `flex-grow: 2`, it takes twice the share.
+
+#### `flex-shrink` — how much an item shrinks when space is tight
+```css
+.item {
+  flex-shrink: 1;   /* default — can shrink */
+  flex-shrink: 0;   /* will not shrink — stays at its set size */
+}
+```
+
+#### `flex-basis` — the starting size before growing/shrinking
+```css
+.item {
+  flex-basis: auto;    /* default — uses the item's width/height */
+  flex-basis: 200px;   /* starts at 200px then grows/shrinks from there */
+}
+```
+
+#### `flex` shorthand — grow, shrink, basis together
+```css
+.item {
+  flex: 1;              /* flex-grow: 1, shrink: 1, basis: 0 */
+  flex: 1 1 200px;      /* grow: 1, shrink: 1, basis: 200px */
+  flex: 0 0 300px;      /* fixed width — no growing or shrinking */
+}
+```
+
+`flex: 1` is the most common shorthand — it makes all items share space equally.
+
+#### `align-self` — override align-items for a single item
+```css
+.item {
+  align-self: flex-start;
+  align-self: flex-end;
+  align-self: center;
+  align-self: stretch;
+}
+```
+
+#### `order` — change visual order without changing HTML
+```css
+.item-a { order: 2; }
+.item-b { order: 1; }   /* appears first visually */
+.item-c { order: 3; }
+```
+
+Default order is `0`. Lower values appear first.
+
+---
+
+### Common patterns
+
+#### Centering something perfectly
+```css
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+```
+This is the easiest way to center anything — horizontally and vertically — in CSS.
+
+#### Equal-width columns
+```css
+.container {
+  display: flex;
+  gap: 24px;
+}
+
+.column {
+  flex: 1;   /* all columns share space equally */
+}
+```
+
+#### Navbar with logo left, links right
+```css
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+```
+
+#### Push last item to the far end
+```css
+.container {
+  display: flex;
+}
+
+.last-item {
+  margin-left: auto;   /* pushes itself to the right */
+}
+```
