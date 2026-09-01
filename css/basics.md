@@ -1719,3 +1719,307 @@ This is the easiest way to center anything — horizontally and vertically — i
   margin-left: auto;   /* pushes itself to the right */
 }
 ```
+
+---
+
+## Transformations
+
+The `transform` property lets you visually move, rotate, scale, or skew an element — without affecting the layout of surrounding elements. The element still occupies its original space in the document.
+
+### Translate — move
+```css
+div {
+  transform: translateX(50px);    /* move right 50px */
+  transform: translateY(-20px);   /* move up 20px */
+  transform: translate(50px, -20px);  /* move right and up together */
+}
+```
+
+Negative values move left/up. Positive move right/down.
+
+### Scale — resize
+```css
+div {
+  transform: scale(1.5);      /* 1.5x bigger in both directions */
+  transform: scaleX(2);       /* stretch horizontally only */
+  transform: scaleY(0.5);     /* squish vertically only */
+  transform: scale(1.2, 0.8); /* different x and y */
+}
+```
+
+`scale(1)` is the original size. `scale(2)` is double. `scale(0.5)` is half.
+
+### Rotate
+```css
+div {
+  transform: rotate(45deg);    /* rotate 45 degrees clockwise */
+  transform: rotate(-90deg);   /* rotate 90 degrees counter-clockwise */
+}
+```
+
+### Skew — slant
+```css
+div {
+  transform: skewX(20deg);    /* slant along the x axis */
+  transform: skewY(10deg);    /* slant along the y axis */
+  transform: skew(20deg, 10deg);
+}
+```
+
+### Combining multiple transforms
+```css
+div {
+  transform: translate(50px, 20px) rotate(45deg) scale(1.2);
+}
+```
+
+List them space-separated on the same `transform` property. They are applied right to left — so in this example scale happens first, then rotate, then translate.
+
+### Transform origin
+
+By default, transformations happen from the center of the element. You can change that:
+
+```css
+div {
+  transform-origin: top left;     /* rotate/scale from the top-left corner */
+  transform-origin: bottom center;
+  transform-origin: 50% 50%;      /* default — center */
+  transform-origin: 0 0;          /* top-left corner */
+}
+```
+
+### 3D transforms
+
+```css
+div {
+  transform: rotateX(45deg);   /* tilt towards/away on x axis */
+  transform: rotateY(45deg);   /* spin on y axis */
+  transform: rotateZ(45deg);   /* same as rotate() */
+  transform: translateZ(50px); /* move towards/away from viewer */
+}
+```
+
+For 3D to look correct, add perspective to the parent:
+
+```css
+.parent {
+  perspective: 800px;   /* lower = more dramatic 3D effect */
+}
+```
+
+### Transforms with transition
+
+Transforms are most useful when combined with `transition` for smooth effects:
+
+```css
+.card {
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.02);  /* lift and slightly enlarge on hover */
+}
+```
+
+---
+
+## Animations
+
+CSS animations let elements animate automatically — no hover or interaction required. They are built from two parts: the `@keyframes` rule and the `animation` property.
+
+### @keyframes — define the animation
+
+```css
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+```
+
+`from` is the start state, `to` is the end state. You can also use percentages for more control:
+
+```css
+@keyframes bounce {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-30px); }
+  100% { transform: translateY(0); }
+}
+```
+
+```css
+@keyframes colorShift {
+  0%   { background-color: red; }
+  33%  { background-color: blue; }
+  66%  { background-color: green; }
+  100% { background-color: red; }
+}
+```
+
+### animation property — apply it to an element
+
+```css
+div {
+  animation: fadeIn 1s ease forwards;
+}
+```
+
+This is shorthand. The individual properties are:
+
+```css
+div {
+  animation-name: fadeIn;           /* name of the @keyframes */
+  animation-duration: 1s;           /* how long one cycle takes */
+  animation-timing-function: ease;  /* speed curve */
+  animation-delay: 0.5s;            /* wait before starting */
+  animation-iteration-count: 1;     /* how many times to run */
+  animation-direction: normal;      /* direction of playback */
+  animation-fill-mode: forwards;    /* what state to hold after it ends */
+}
+```
+
+### Timing functions
+
+Controls the pace of the animation — how it accelerates and decelerates.
+
+| Value          | Description                                           |
+|----------------|-------------------------------------------------------|
+| `ease`         | Default. Slow start, fast middle, slow end            |
+| `linear`       | Constant speed throughout                             |
+| `ease-in`      | Starts slow, ends fast                                |
+| `ease-out`     | Starts fast, ends slow                                |
+| `ease-in-out`  | Slow start and slow end                               |
+| `cubic-bezier` | Custom curve — full control                           |
+
+```css
+animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+```
+
+### Iteration count
+
+```css
+animation-iteration-count: 1;         /* plays once — default */
+animation-iteration-count: 3;         /* plays 3 times */
+animation-iteration-count: infinite;  /* loops forever */
+```
+
+### Direction
+
+```css
+animation-direction: normal;            /* default — forward each time */
+animation-direction: reverse;           /* plays backwards */
+animation-direction: alternate;         /* forward, then backward, then forward... */
+animation-direction: alternate-reverse; /* backward, then forward, then backward... */
+```
+
+### Fill mode — what happens before and after
+
+```css
+animation-fill-mode: none;       /* default — element snaps back after animation */
+animation-fill-mode: forwards;   /* holds the final keyframe state after it ends */
+animation-fill-mode: backwards;  /* applies the first keyframe during the delay */
+animation-fill-mode: both;       /* applies both forwards and backwards */
+```
+
+`forwards` is the most commonly used — it prevents the element from snapping back to its original state after the animation completes.
+
+### Multiple animations
+
+```css
+div {
+  animation: fadeIn 1s ease forwards, bounce 0.5s ease 1s infinite;
+}
+```
+
+Separate multiple animations with a comma. Each runs independently.
+
+### Pausing an animation
+
+```css
+div {
+  animation-play-state: running;  /* default */
+  animation-play-state: paused;
+}
+
+div:hover {
+  animation-play-state: paused;   /* pause on hover */
+}
+```
+
+---
+
+### Transition vs Animation
+
+These two are often confused. Here is the difference:
+
+| | Transition | Animation |
+|---|---|---|
+| Trigger | Needs a state change (hover, focus, class added) | Runs automatically |
+| Keyframes | No — just start and end | Yes — full control over every step |
+| Looping | No | Yes — `infinite` |
+| Use case | Hover effects, UI feedback | Loading spinners, intros, continuous motion |
+
+```css
+/* Transition — reacts to hover */
+.btn {
+  background-color: royalblue;
+  transition: background-color 0.2s ease;
+}
+.btn:hover {
+  background-color: darkblue;
+}
+
+/* Animation — plays on its own */
+.spinner {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+```
+
+### Practical examples
+
+#### Fade in on load
+```css
+.hero {
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+```
+
+#### Pulse effect
+```css
+.badge {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.1); }
+}
+```
+
+#### Loading spinner
+```css
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ddd;
+  border-top-color: royalblue;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+```
