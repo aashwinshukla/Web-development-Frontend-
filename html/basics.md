@@ -253,3 +253,279 @@ A favicon is the small icon that appears on the browser tab next to the page tit
 ```
 
 If no favicon is set, the browser shows a default blank icon. You can generate a favicon from any image using free tools like [favicon.io](https://favicon.io).
+
+---
+
+## Text Formatting
+
+HTML has several tags specifically for formatting text. Some are visual, some carry meaning.
+
+```html
+<b>Bold</b>                   <!-- visually bold, no extra meaning -->
+<strong>Strong</strong>        <!-- bold + signals importance -->
+
+<i>Italic</i>                 <!-- visually italic, no extra meaning -->
+<em>Emphasized</em>           <!-- italic + signals emphasis -->
+
+<u>Underlined</u>             <!-- underline -->
+<s>Strikethrough</s>          <!-- crossed out text -->
+
+<mark>Highlighted</mark>       <!-- yellow highlight by default -->
+
+<small>Small text</small>     <!-- renders text smaller -->
+
+<sup>Superscript</sup>        <!-- e.g. x<sup>2</sup> → x² -->
+<sub>Subscript</sub>          <!-- e.g. H<sub>2</sub>O → H₂O -->
+
+<code>inline code</code>      <!-- monospace, used for code snippets -->
+
+<pre>
+  Preformatted text
+  preserves spacing and line breaks
+</pre>
+
+<blockquote>
+  Used for longer quotes from another source.
+</blockquote>
+
+<abbr title="HyperText Markup Language">HTML</abbr>
+<!-- hovering over the text shows the full form -->
+```
+
+**Semantic vs visual:**
+Tags like `<strong>` and `<em>` are preferred over `<b>` and `<i>` because they carry meaning — screen readers and search engines treat them as signals of importance, not just styling.
+
+---
+
+## Div and Span
+
+Both are generic containers with no visual style of their own. Their purpose is to group content so you can target it with CSS or JavaScript.
+
+### `<div>` — block-level container
+Takes up the full width of its parent. Starts on a new line. Used to group larger sections of content.
+
+```html
+<div class="card">
+  <h2>Title</h2>
+  <p>Some description here.</p>
+</div>
+```
+
+### `<span>` — inline container
+Only as wide as its content. Sits inside a line of text without breaking the flow. Used to target a specific word or phrase.
+
+```html
+<p>The sky is <span class="highlight">bright blue</span> today.</p>
+```
+
+### Key difference
+```html
+<!-- div breaks onto its own line -->
+<div>First block</div>
+<div>Second block</div>
+
+<!-- span stays inline -->
+<p>This is <span>inline</span> and stays in the same line.</p>
+```
+
+On their own, `<div>` and `<span>` do nothing visually. They become useful when you add a `class` or `id` and style them with CSS.
+
+---
+
+## Lists
+
+### Unordered List
+Displays items with bullet points. Order does not matter.
+
+```html
+<ul>
+  <li>HTML</li>
+  <li>CSS</li>
+  <li>JavaScript</li>
+</ul>
+```
+
+### Ordered List
+Displays items with numbers. Order matters.
+
+```html
+<ol>
+  <li>Boil water</li>
+  <li>Add pasta</li>
+  <li>Cook for 10 minutes</li>
+</ol>
+```
+
+You can change the numbering style with the `type` attribute:
+```html
+<ol type="A">   <!-- A, B, C -->
+<ol type="a">   <!-- a, b, c -->
+<ol type="I">   <!-- I, II, III -->
+<ol type="i">   <!-- i, ii, iii -->
+<ol start="5">  <!-- starts counting from 5 -->
+```
+
+### Description List
+Used for term-definition pairs — like a glossary.
+
+```html
+<dl>
+  <dt>HTML</dt>
+  <dd>The structure of a webpage.</dd>
+
+  <dt>CSS</dt>
+  <dd>The styling of a webpage.</dd>
+
+  <dt>JavaScript</dt>
+  <dd>The behaviour of a webpage.</dd>
+</dl>
+```
+
+- `<dl>` — the description list wrapper
+- `<dt>` — the term
+- `<dd>` — the definition (indented by default)
+
+### Nested Lists
+You can put any list inside an `<li>` to create sub-levels.
+
+```html
+<ul>
+  <li>Frontend
+    <ul>
+      <li>HTML</li>
+      <li>CSS</li>
+      <li>JavaScript</li>
+    </ul>
+  </li>
+  <li>Backend
+    <ul>
+      <li>Node.js</li>
+      <li>Python</li>
+    </ul>
+  </li>
+</ul>
+```
+
+You can nest ordered inside unordered and vice versa:
+
+```html
+<ol>
+  <li>Step one</li>
+  <li>Step two
+    <ul>
+      <li>Sub-step A</li>
+      <li>Sub-step B</li>
+    </ul>
+  </li>
+  <li>Step three</li>
+</ol>
+```
+
+---
+
+## Tables
+
+Tables are used to display data in rows and columns.
+
+```html
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Age</th>
+      <th>City</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Alice</td>
+      <td>24</td>
+      <td>New York</td>
+    </tr>
+    <tr>
+      <td>Bob</td>
+      <td>30</td>
+      <td>London</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+**Tags used:**
+- `<table>` — the table wrapper
+- `<thead>` — groups the header row(s)
+- `<tbody>` — groups the data rows
+- `<tr>` — table row
+- `<th>` — table header cell (bold and centered by default)
+- `<td>` — table data cell
+
+### Spanning columns and rows
+```html
+<!-- colspan: cell stretches across 2 columns -->
+<td colspan="2">Merged across 2 columns</td>
+
+<!-- rowspan: cell stretches across 2 rows -->
+<td rowspan="2">Merged across 2 rows</td>
+```
+
+### Table with a caption
+```html
+<table>
+  <caption>Student Results</caption>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Alice</td>
+      <td>95</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+`<caption>` appears above the table and acts as its title.
+
+> Tables are for tabular data only — not for page layout. CSS is used for layout.
+
+---
+
+## Buttons
+
+The `<button>` tag creates a clickable button.
+
+```html
+<button>Click Me</button>
+```
+
+### Button types
+The `type` attribute controls what the button does:
+
+```html
+<!-- Submit: submits a form (default behavior inside a form) -->
+<button type="submit">Submit</button>
+
+<!-- Reset: clears all inputs in a form -->
+<button type="reset">Reset</button>
+
+<!-- Button: does nothing by default, used with JavaScript -->
+<button type="button">Click Me</button>
+```
+
+Always specify `type="button"` when using a button outside a form or with JavaScript — without it, some browsers default to `type="submit"` which can cause unexpected behavior.
+
+### Disabled button
+```html
+<button type="button" disabled>Not Available</button>
+```
+Greyed out and unclickable.
+
+### Button vs input type button
+You may also see this older style:
+```html
+<input type="button" value="Click Me" />
+```
+The `<button>` tag is preferred because it can contain HTML inside it (like icons), while `<input>` can only show plain text.
