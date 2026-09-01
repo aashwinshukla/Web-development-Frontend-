@@ -529,3 +529,302 @@ You may also see this older style:
 <input type="button" value="Click Me" />
 ```
 The `<button>` tag is preferred because it can contain HTML inside it (like icons), while `<input>` can only show plain text.
+
+---
+
+## Forms
+
+Forms are used to collect input from the user — login forms, search bars, contact forms, sign-up pages, etc.
+
+```html
+<form action="/submit" method="POST">
+  <!-- inputs go here -->
+</form>
+```
+
+- `action` — the URL where the form data is sent when submitted. If left empty, it submits to the current page.
+- `method` — how the data is sent:
+  - `GET` — data is appended to the URL (visible, used for searches)
+  - `POST` — data is sent in the request body (hidden, used for sensitive data like passwords)
+
+---
+
+### Input Fields
+
+The `<input>` tag is the most common form element. The `type` attribute defines what kind of input it is.
+
+```html
+<!-- Text -->
+<input type="text" placeholder="Enter your name" />
+
+<!-- Email -->
+<input type="email" placeholder="Enter your email" />
+
+<!-- Password -->
+<input type="password" placeholder="Enter password" />
+
+<!-- Number -->
+<input type="number" min="1" max="100" />
+
+<!-- Date -->
+<input type="date" />
+
+<!-- Checkbox -->
+<input type="checkbox" /> Remember me
+
+<!-- Radio buttons -->
+<input type="radio" name="gender" value="male" /> Male
+<input type="radio" name="gender" value="female" /> Female
+
+<!-- File upload -->
+<input type="file" />
+
+<!-- Hidden field (not visible to user) -->
+<input type="hidden" name="userId" value="42" />
+
+<!-- Color picker -->
+<input type="color" />
+
+<!-- Range slider -->
+<input type="range" min="0" max="100" />
+```
+
+> Radio buttons with the same `name` are grouped — only one can be selected at a time.
+
+---
+
+### Labels
+
+Labels connect to inputs and tell the user what to fill in. Clicking the label focuses the input — improves usability and accessibility.
+
+```html
+<!-- Using 'for' and 'id' to connect them -->
+<label for="username">Username</label>
+<input type="text" id="username" name="username" />
+
+<!-- Wrapping the input inside the label (also works) -->
+<label>
+  Email
+  <input type="email" name="email" />
+</label>
+```
+
+Always use labels — they are important for screen readers and accessibility.
+
+---
+
+### Textarea
+
+For multi-line text input.
+
+```html
+<label for="message">Message</label>
+<textarea id="message" name="message" rows="5" cols="40" placeholder="Write your message..."></textarea>
+```
+
+- `rows` and `cols` set the default visible size.
+- Unlike `<input>`, `<textarea>` has a closing tag.
+
+---
+
+### Select Dropdown
+
+```html
+<label for="country">Country</label>
+<select id="country" name="country">
+  <option value="">-- Select --</option>
+  <option value="us">United States</option>
+  <option value="uk">United Kingdom</option>
+  <option value="in">India</option>
+</select>
+```
+
+- The `value` of the selected `<option>` is what gets submitted.
+- Add `selected` to an option to make it the default: `<option value="in" selected>India</option>`
+
+### Grouped options
+```html
+<select name="car">
+  <optgroup label="German">
+    <option value="bmw">BMW</option>
+    <option value="audi">Audi</option>
+  </optgroup>
+  <optgroup label="Japanese">
+    <option value="toyota">Toyota</option>
+    <option value="honda">Honda</option>
+  </optgroup>
+</select>
+```
+
+---
+
+### Common Input Attributes
+
+| Attribute     | What it does                                              |
+|---------------|-----------------------------------------------------------|
+| `name`        | The key sent with the form data — required for submission |
+| `id`          | Used to link with a `<label>` and target with CSS/JS      |
+| `placeholder` | Hint text shown inside the input when empty               |
+| `value`       | Pre-filled value                                          |
+| `required`    | Makes the field mandatory before the form can submit      |
+| `disabled`    | Input is visible but not editable or submittable          |
+| `readonly`    | Input is visible and selectable but not editable          |
+| `maxlength`   | Maximum number of characters allowed                      |
+| `min` / `max` | Minimum and maximum values for number/date inputs         |
+
+---
+
+### Fieldset and Legend
+
+Used to group related inputs and give the group a label.
+
+```html
+<fieldset>
+  <legend>Personal Information</legend>
+
+  <label for="fname">First Name</label>
+  <input type="text" id="fname" name="fname" />
+
+  <label for="lname">Last Name</label>
+  <input type="text" id="lname" name="lname" />
+</fieldset>
+```
+
+`<fieldset>` draws a box around the group. `<legend>` is the title of that box.
+
+---
+
+### A Complete Form Example
+
+```html
+<form action="/register" method="POST">
+  <fieldset>
+    <legend>Create Account</legend>
+
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" required />
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required />
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required />
+
+    <label for="country">Country</label>
+    <select id="country" name="country">
+      <option value="">-- Select --</option>
+      <option value="us">United States</option>
+      <option value="in">India</option>
+    </select>
+
+    <label>
+      <input type="checkbox" name="terms" required />
+      I agree to the terms and conditions
+    </label>
+
+    <button type="submit">Register</button>
+  </fieldset>
+</form>
+```
+
+---
+
+## Header and Footer
+
+These are semantic HTML elements — they give meaning to the structure of a page, making it easier to read, maintain, and understand for both developers and browsers.
+
+---
+
+### `<header>`
+
+Represents the top section of a page or a section. Typically contains the site logo, navigation, and page title.
+
+```html
+<header>
+  <h1>My Website</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+```
+
+- `<header>` is not the same as `<head>`. The `<head>` is invisible metadata. The `<header>` is visible page content.
+- You can have multiple `<header>` elements on a page — one for the page, one inside an `<article>`, etc.
+
+---
+
+### `<nav>`
+
+Used inside a header (or anywhere) to wrap navigation links.
+
+```html
+<nav>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+```
+
+Using a list inside `<nav>` is a common and accessible pattern.
+
+---
+
+### `<footer>`
+
+Represents the bottom section of a page or section. Typically contains copyright info, links, contact details, or social media icons.
+
+```html
+<footer>
+  <p>&copy; 2026 My Website. All rights reserved.</p>
+  <nav>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Service</a>
+  </nav>
+</footer>
+```
+
+- `&copy;` is an HTML entity that renders the © symbol.
+- Like `<header>`, you can have multiple `<footer>` elements — one for the page, one inside an article, etc.
+
+---
+
+### Other Semantic Layout Elements
+
+While we're here — these are commonly used alongside header and footer to build a full page structure:
+
+```html
+<body>
+
+  <header>
+    <!-- logo, nav -->
+  </header>
+
+  <main>
+    <!-- the primary content of the page, only one per page -->
+
+    <section>
+      <!-- a themed group of content -->
+    </section>
+
+    <article>
+      <!-- self-contained content like a blog post or news item -->
+    </article>
+
+    <aside>
+      <!-- secondary content, like a sidebar -->
+    </aside>
+
+  </main>
+
+  <footer>
+    <!-- copyright, links -->
+  </footer>
+
+</body>
+```
+
+These tags don't add any visual style on their own — but they make the page structure clear and meaningful. This matters for SEO, accessibility, and working with CSS later.
