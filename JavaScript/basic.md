@@ -53,3 +53,39 @@ to get output in js we have to
 ```
 to check the output you will have to go live and then right click on the website and inspect and then go console thats where we will see js output 
 
+```js
+    // inside index.js
+    
+    window.alert(`This is an alert`);
+    
+```
+
+this will create a alert pop up on the window with the text inside 
+
+now lets populate our website 
+```html
+    !--inside index.html--!
+    <!DOCTYPE html>
+    <html lang = "en">
+    <head>
+        <title>My Website</title>
+        <link rel = "stylesheet" href = "style.css">
+    </head>
+    <body>
+        <h1 id = "myH1"></h1>
+        !--add any id that you can remember so we can call on index.js--!
+        <p id = "myP"></p>
+        <script src = "index.js"></script> 
+    </body>
+    </html>
+```
+
+```js
+    // inside index.js
+    
+    document.getElementById("myH1").textContent = `Hello`; 
+    // this time website will show Hello h1 font 
+    document.getElementById("myP").textContent = `i like solving and making`; 
+    // we will also get the paragraph text 
+    
+```
