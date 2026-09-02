@@ -125,3 +125,67 @@ document.getElementById("myP").textContent = `I like solving and making things`;
 The browser will display `Hello` as an `<h1>` and the second string as a `<p>` — even though the HTML tags were empty. JavaScript filled them in.
 
 This is the foundation of how JavaScript talks to the page — find an element, then do something with it.
+
+## Variable
+variable is a container that holds value, t need to be declared and the two variable of same name can not be declared
+
+```javascript
+// index.js
+let x;
+x = 100;
+//OR
+let y = 123;
+
+console.log(x);
+console.log(y);
+
+let age = 19;
+console.log(`you are ${age} years old`);
+
+console.log(typeof age);
+console.log(typeof x);
+
+// output will be number
+
+let firstName = "Aashwin";
+console.log(typeof firstName);
+// output will be string 
+
+let online = true;
+console.log(typeof online);
+// output boolean 
+
+```
+${} using placeholder and putting the variable inside lets you use it in between of the statement you are printing 
+
+using typeof and variable name inside console.log() gives you data type of the variable 
+
+strings are different from number, it consists of alpha, num, and symbols but the numbers cant be used for artheatic purposes
+
+```javascript
+// index.js
+let fullName = "Aashwin Shukla";
+let age = "19";
+let isStudent = true;
+
+document.getEmementById("p1").textContent = `Your name is : ${fullName}`;
+document.getEmementById("p2").textContent = `You are ${age} years old`;
+document.getEmementById("p3").textContent = `Are you a Student : ${isStudent}`;
+```
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Website</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <p id="p1"></p>   
+    <p id="p2"></p>  
+    <p id="p3"></p>
+    <script src="index.js"></script>
+  </body>
+</html>
+```
