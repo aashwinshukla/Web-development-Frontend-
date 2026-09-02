@@ -261,3 +261,51 @@ When multiple operators are in one expression, JavaScript follows this order:
 let result = 2 + 3 * 4;    // 14, not 20 — multiplication first
 let result2 = (2 + 3) * 4; // 20 — parentheses first
 ```
+
+## Accept user Input 
+
+two ways to accept user input : 
+```
+1. easy way = window prompt 
+2. professional way = HTML textbox
+```
+
+### Window prompt 
+```javascript
+// index.js
+let username; 
+username = window.prompt("Whats your username?");
+console.log(username);
+```
+
+### HTML Textbox
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Website</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1 id = "myH1">Welcome</h1>
+
+    <label>username : </label>
+    <input id = "myText"><br><br>
+    <button id = "mySubmit" >submit</button>
+
+    <script src="index.js"></script>
+  </body>
+</html>
+```
+
+```javascript
+// index.js
+let username;
+document.getElementById("mySubmit").onclick = function(){
+    username = document.getElementById("myText").value;
+    console.log(username);
+
+    document.getElementById("myH1").textContent = `Hello ${username}`
+}
+```
