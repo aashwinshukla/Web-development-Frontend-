@@ -126,51 +126,63 @@ The browser will display `Hello` as an `<h1>` and the second string as a `<p>` �
 
 This is the foundation of how JavaScript talks to the page — find an element, then do something with it.
 
-## Variable
-variable is a container that holds value, t need to be declared and the two variable of same name can not be declared
+## Variables
+
+A variable is a container that holds a value. It needs to be declared before use, and two variables with the same name cannot be declared in the same scope.
 
 ```javascript
 // index.js
 let x;
 x = 100;
-//OR
+// OR declare and assign in one line
 let y = 123;
 
 console.log(x);
 console.log(y);
+```
 
+### Data types
+
+JavaScript has a few basic data types. You can check what type a value is using `typeof`.
+
+```javascript
 let age = 19;
-console.log(`you are ${age} years old`);
-
-console.log(typeof age);
-console.log(typeof x);
-
-// output will be number
+console.log(typeof age);       // number
 
 let firstName = "Aashwin";
-console.log(typeof firstName);
-// output will be string 
+console.log(typeof firstName); // string
 
 let online = true;
-console.log(typeof online);
-// output boolean 
-
+console.log(typeof online);    // boolean
 ```
-${} using placeholder and putting the variable inside lets you use it in between of the statement you are printing 
 
-using typeof and variable name inside console.log() gives you data type of the variable 
+- **number** — any numeric value (`19`, `3.14`, `-5`)
+- **string** — text wrapped in quotes (`"hello"`, `'world'`, `` `backtick` ``)
+- **boolean** — only two values: `true` or `false`
 
-strings are different from number, it consists of alpha, num, and symbols but the numbers cant be used for artheatic purposes
+Strings can contain letters, numbers, and symbols — but numbers stored as strings can't be used for arithmetic.
+
+### Template literals
+
+Backticks (`` ` ``) allow you to embed variables directly inside a string using `${}`. This is called a template literal.
+
+```javascript
+let age = 19;
+console.log(`You are ${age} years old`);
+// output: You are 19 years old
+```
+
+### Putting variables on the page
 
 ```javascript
 // index.js
 let fullName = "Aashwin Shukla";
-let age = "19";
+let age = 19;
 let isStudent = true;
 
-document.getEmementById("p1").textContent = `Your name is : ${fullName}`;
-document.getEmementById("p2").textContent = `You are ${age} years old`;
-document.getEmementById("p3").textContent = `Are you a Student : ${isStudent}`;
+document.getElementById("p1").textContent = `Your name is: ${fullName}`;
+document.getElementById("p2").textContent = `You are ${age} years old`;
+document.getElementById("p3").textContent = `Are you a student: ${isStudent}`;
 ```
 
 ```html
@@ -182,10 +194,70 @@ document.getEmementById("p3").textContent = `Are you a Student : ${isStudent}`;
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <p id="p1"></p>   
-    <p id="p2"></p>  
+    <p id="p1"></p>
+    <p id="p2"></p>
     <p id="p3"></p>
     <script src="index.js"></script>
   </body>
 </html>
+```
+
+---
+
+## Arithmetic Operators
+
+Used to perform math on numbers.
+
+| Operator | Description       | Example          |
+|----------|-------------------|------------------|
+| `+`      | Addition          | `5 + 3` → `8`   |
+| `-`      | Subtraction       | `5 - 3` → `2`   |
+| `*`      | Multiplication    | `5 * 3` → `15`  |
+| `/`      | Division          | `6 / 2` → `3`   |
+| `**`     | Exponent (power)  | `2 ** 3` → `8`  |
+| `%`      | Modulo (remainder)| `7 % 2` → `1`   |
+
+```javascript
+let students = 30;
+
+students = students + 1;  // 31
+students = students - 1;  // 30
+students = students * 2;  // 60
+students = students / 2;  // 30
+students = students ** 2; // 900
+students = students % 2;  // 0
+```
+
+### Shorthand assignment operators
+
+Instead of writing `students = students + 1` you can shorten it:
+
+```javascript
+students += 1;   // same as students = students + 1
+students -= 1;
+students *= 2;
+students /= 2;
+students **= 2;
+students %= 2;
+```
+
+For incrementing or decrementing by 1 specifically:
+
+```javascript
+students++;   // same as students += 1
+students--;   // same as students -= 1
+```
+
+### Operator precedence
+
+When multiple operators are in one expression, JavaScript follows this order:
+
+1. Parentheses `()`
+2. Exponents `**`
+3. Multiplication `*`, Division `/`, Modulo `%`
+4. Addition `+`, Subtraction `-`
+
+```javascript
+let result = 2 + 3 * 4;    // 14, not 20 — multiplication first
+let result2 = (2 + 3) * 4; // 20 — parentheses first
 ```
