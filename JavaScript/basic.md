@@ -15,6 +15,7 @@ we will also make index.html and style.css
 
 ## linking them 
 ```html
+    !--inside index.html--!
     <!DOCTYPE html>
     <html lang = "en">
     <head>
@@ -22,10 +23,33 @@ we will also make index.html and style.css
         <link rel = "stylesheet" href = "style.css"> !--css file added which was in same folder --!
     </head>
     <body>
-        <script src = "index.js"></script> !--javascript file added which was in the same file--!
+        <h1></h1>
+        <h2></h2>
+        <p></p>
+        <script src = "index.js"></script> !--javascript file added which was in the same file, also try to keep this js declaration at bottom so if any issue we want at least html to render--!
     </body>
     </html>
 ```
 
 
+```css
+    /*inside style.css*/
+    body{
+        font-famly: Verdana;
+        font-size: 2em;
+    }
+    
+```
+
+## getting output 
+to get output in js we have to 
+```js
+    // inside index.js
+    console.log(`hello`);
+    console.log('i like pizza');
+    console.log("hello world");
+    // above are few ways of printing things out but i will use back ticks ``
+
+```
+to check the output you will have to go live and then right click on the website and inspect and then go console thats where we will see js output 
 
