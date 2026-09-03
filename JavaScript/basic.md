@@ -673,3 +673,152 @@ if (min > max) {
 ```
 
 This is basic input validation — if the user enters something that doesn't make sense (like min 10, max 2), the program catches it and shows a message instead of producing a nonsense result. Always good practice.
+
+
+## Conditionals
+
+Conditionals let your program make decisions — run different code depending on whether something is true or false.
+
+### if / else if / else
+
+```javascript
+let age = 25;
+
+if (age >= 18) {
+    console.log("You are old enough to enter this site");
+} else if (age <= 0) {
+    console.log("You are not born yet");
+} else {
+    console.log("You are not old enough to enter this site");
+}
+```
+
+- `if` — checks the condition. If `true`, runs its block and skips the rest.
+- `else if` — checked only if the `if` above was `false`. You can chain as many as you need.
+- `else` — runs only if every condition above was `false`. It's the fallback. No condition needed.
+
+Only one block ever runs — JavaScript goes top to bottom, finds the first `true` condition, runs it, and stops.
+
+### Comparison operators
+
+These are used inside conditions to compare values.
+
+| Operator | Meaning                        | Example           |
+|----------|--------------------------------|-------------------|
+| `==`     | Equal in value (loose)         | `5 == "5"` → `true`  |
+| `===`    | Equal in value AND type (strict) | `5 === "5"` → `false` |
+| `!=`     | Not equal (loose)              | `5 != 3` → `true` |
+| `!==`    | Not equal (strict)             | `5 !== "5"` → `true` |
+| `>`      | Greater than                   | `10 > 5` → `true` |
+| `<`      | Less than                      | `3 < 7` → `true`  |
+| `>=`     | Greater than or equal          | `5 >= 5` → `true` |
+| `<=`     | Less than or equal             | `4 <= 3` → `false`|
+
+**Always prefer `===` over `==`**. The loose `==` does type conversion behind the scenes which leads to unexpected results. `===` checks both value and type — no surprises.
+
+```javascript
+console.log(5 == "5");   // true  — loose, converts types
+console.log(5 === "5");  // false — strict, different types
+```
+
+### Logical operators
+
+Used to combine multiple conditions.
+
+| Operator | Meaning | True when                         |
+|----------|---------|-----------------------------------|
+| `&&`     | AND     | Both conditions are true          |
+| `\|\|`   | OR      | At least one condition is true    |
+| `!`      | NOT     | The condition is false (inverts it) |
+
+```javascript
+let age = 25;
+let hasID = true;
+
+// AND — both must be true
+if (age >= 18 && hasID) {
+    console.log("Entry allowed");
+}
+
+// OR — at least one must be true
+if (age < 13 || age > 65) {
+    console.log("Discounted ticket");
+}
+
+// NOT — inverts the condition
+if (!hasID) {
+    console.log("No ID, no entry");
+}
+```
+
+### Nested if statements
+
+You can put an `if` inside another `if` for more specific checks.
+
+```javascript
+let age = 20;
+let hasTicket = true;
+
+if (age >= 18) {
+    if (hasTicket) {
+        console.log("Welcome in");
+    } else {
+        console.log("You need a ticket");
+    }
+} else {
+    console.log("You must be 18 or older");
+}
+```
+
+Keep nesting shallow — if you find yourself three or four levels deep, it's usually a sign the logic needs to be restructured.
+
+### Switch statement
+
+`switch` is cleaner than a long chain of `else if` when you're checking one variable against many exact values.
+
+```javascript
+let day = "Monday";
+
+switch (day) {
+    case "Monday":
+        console.log("Start of the work week");
+        break;
+    case "Friday":
+        console.log("End of the work week");
+        break;
+    case "Saturday":
+    case "Sunday":
+        console.log("Weekend");
+        break;
+    default:
+        console.log("Midweek");
+}
+```
+
+- Each `case` checks if the variable matches that value.
+- `break` exits the switch after a match. Without it, execution falls through to the next case.
+- Two cases with no `break` between them (Saturday and Sunday above) share the same block — a useful pattern for grouping.
+- `default` is the fallback if nothing matches — equivalent to `else`.
+
+`switch` uses strict equality (`===`) internally, so types must match too.
+
+### Ternary operator
+
+A compact shorthand for a simple `if / else` — useful when you just need to assign one of two values.
+
+```javascript
+// Regular if/else
+let message;
+if (age >= 18) {
+    message = "Adult";
+} else {
+    message = "Minor";
+}
+
+// Same thing as a ternary
+let message = age >= 18 ? "Adult" : "Minor";
+```
+
+Syntax: `condition ? valueIfTrue : valueIfFalse`
+
+Keep ternaries simple — one condition, one line. If the logic is more complex, use a regular `if/else` instead.
