@@ -1247,3 +1247,212 @@ JSON.stringify(a) === JSON.stringify(b)  // true — compares the string represe
 | `!=`          | No         | Yes      | Avoid                |
 | `!==`         | Yes        | No       | Yes                  |
 | `Object.is()` | Yes        | No       | For NaN / -0 checks  |
+
+---
+
+## Loops
+
+Loops let you run the same block of code repeatedly without writing it out multiple times. JavaScript has several types — each suited for different situations.
+
+---
+
+### while loop
+
+Repeats as long as the condition is `true`. The condition is checked **before** each iteration.
+
+```javascript
+let count = 1;
+
+while (count <= 5) {
+    console.log(count);
+    count++;
+}
+// 1, 2, 3, 4, 5
+```
+
+Use `while` when you don't know in advance how many times you'll loop — you just loop until something changes.
+
+```javascript
+// Keep asking until valid input
+let input = "";
+while (input !== "quit") {
+    input = window.prompt("Type something (or 'quit' to stop):");
+}
+```
+
+---
+
+### do...while loop
+
+Same as `while`, except the code block runs **at least once** — the condition is checked **after** the first iteration.
+
+```javascript
+let count = 1;
+
+do {
+    console.log(count);
+    count++;
+} while (count <= 5);
+// 1, 2, 3, 4, 5
+```
+
+The difference shows when the condition starts out false:
+
+```javascript
+let count = 10;
+
+// while — never runs because condition is false from the start
+while (count <= 5) {
+    console.log(count); // never executes
+}
+
+// do...while — runs once regardless
+do {
+    console.log(count); // prints 10
+} while (count <= 5);
+```
+
+Use `do...while` when you always need to run the code at least once — like showing a menu before checking if the user wants to exit.
+
+---
+
+### for loop
+
+The most common loop. Best when you know exactly how many times you want to iterate.
+
+```javascript
+for (let i = 0; i < 5; i++) {
+    console.log(i);
+}
+// 0, 1, 2, 3, 4
+```
+
+The three parts inside `for(...)`:
+1. `let i = 0` — initializer, runs once before the loop starts
+2. `i < 5` — condition, checked before each iteration
+3. `i++` — update, runs after each iteration
+
+```javascript
+// Count down
+for (let i = 10; i >= 1; i--) {
+    console.log(i);
+}
+
+// Count by 2
+for (let i = 0; i <= 10; i += 2) {
+    console.log(i); // 0, 2, 4, 6, 8, 10
+}
+```
+
+---
+
+### for...of loop
+
+Iterates over the **values** of an iterable — arrays, strings, etc. Cleaner than a regular `for` loop when you just need each value.
+
+```javascript
+let fruits = ["apple", "banana", "mango"];
+
+for (let fruit of fruits) {
+    console.log(fruit);
+}
+// apple
+// banana
+// mango
+```
+
+Works on strings too — iterates character by character:
+
+```javascript
+let name = "Aashwin";
+
+for (let char of name) {
+    console.log(char);
+}
+// A, a, s, h, w, i, n
+```
+
+---
+
+### for...in loop
+
+Iterates over the **keys** (property names) of an object.
+
+```javascript
+let person = {
+    name: "Aashwin",
+    age: 19,
+    city: "Lucknow"
+};
+
+for (let key in person) {
+    console.log(`${key}: ${person[key]}`);
+}
+// name: Aashwin
+// age: 19
+// city: Lucknow
+```
+
+- `key` gives you the property name (`"name"`, `"age"`, `"city"`)
+- `person[key]` uses that key to get the value
+
+`for...in` can also be used on arrays (it gives you the indexes), but `for...of` is preferred for arrays.
+
+---
+
+### break and continue
+
+These give you control over loop flow.
+
+**`break`** — exits the loop immediately.
+
+```javascript
+for (let i = 0; i < 10; i++) {
+    if (i === 5) break;
+    console.log(i);
+}
+// 0, 1, 2, 3, 4 — stops when i hits 5
+```
+
+**`continue`** — skips the current iteration and moves to the next one.
+
+```javascript
+for (let i = 0; i < 10; i++) {
+    if (i % 2 === 0) continue;
+    console.log(i);
+}
+// 1, 3, 5, 7, 9 — skips even numbers
+```
+
+Both work in `while`, `do...while`, `for`, `for...of`, and `for...in`.
+
+---
+
+### Nested loops
+
+A loop inside another loop. The inner loop completes fully for each iteration of the outer loop.
+
+```javascript
+for (let i = 1; i <= 3; i++) {
+    for (let j = 1; j <= 3; j++) {
+        console.log(`${i} x ${j} = ${i * j}`);
+    }
+}
+// 1 x 1 = 1
+// 1 x 2 = 2
+// 1 x 3 = 3
+// 2 x 1 = 2
+// ... and so on
+```
+
+---
+
+### Which loop to use
+
+| Loop         | Use when                                                      |
+|--------------|---------------------------------------------------------------|
+| `for`        | You know how many times to loop                               |
+| `while`      | You loop until a condition changes, count unknown             |
+| `do...while` | Same as while but must run at least once                      |
+| `for...of`   | You need each value from an array or string                   |
+| `for...in`   | You need each key from an object                              |
