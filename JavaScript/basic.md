@@ -822,3 +822,119 @@ let message = age >= 18 ? "Adult" : "Minor";
 Syntax: `condition ? valueIfTrue : valueIfFalse`
 
 Keep ternaries simple — one condition, one line. If the logic is more complex, use a regular `if/else` instead.
+
+## Checked Property
+
+---
+
+## Checked Property
+
+When working with checkboxes and radio buttons, you can't use `.value` to know if one is selected — `.value` just gives you the value attribute regardless of whether it's checked or not. Instead you use `.checked`, which returns `true` if selected and `false` if not.
+
+### Checkbox
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Website</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <input type="checkbox" id="myCheckbox" />
+    <label for="myCheckbox">I agree to the terms</label><br /><br />
+    <button id="myBtn">Submit</button>
+    <p id="myResult"></p>
+
+    <script src="index.js"></script>
+  </body>
+</html>
+```
+
+```javascript
+// index.js
+const myBtn = document.getElementById("myBtn");
+const myCheckbox = document.getElementById("myCheckbox");
+const myResult = document.getElementById("myResult");
+
+myBtn.onclick = function() {
+    if (myCheckbox.checked) {
+        myResult.textContent = "Terms accepted";
+    } else {
+        myResult.textContent = "Please accept the terms first";
+    }
+};
+```
+
+`.checked` returns `true` or `false` — so you can use it directly as the condition in an `if` statement without comparing it to anything.
+
+---
+
+### Radio Buttons
+
+Radio buttons come in a group — only one can be selected at a time. They share the same `name` attribute to form that group. You check each one individually with `.checked`.
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Website</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <input type="radio" id="creditCard" name="payment" value="credit card" />
+    <label for="creditCard">Credit Card</label><br />
+
+    <input type="radio" id="debitCard" name="payment" value="debit card" />
+    <label for="debitCard">Debit Card</label><br />
+
+    <input type="radio" id="paypal" name="payment" value="PayPal" />
+    <label for="paypal">PayPal</label><br /><br />
+
+    <button id="myBtn">Confirm</button>
+    <p id="myResult"></p>
+
+    <script src="index.js"></script>
+  </body>
+</html>
+```
+
+```javascript
+// index.js
+const myBtn = document.getElementById("myBtn");
+const myResult = document.getElementById("myResult");
+
+myBtn.onclick = function() {
+    const creditCard = document.getElementById("creditCard");
+    const debitCard = document.getElementById("debitCard");
+    const paypal = document.getElementById("paypal");
+
+    if (creditCard.checked) {
+        myResult.textContent = `Payment method: ${creditCard.value}`;
+    } else if (debitCard.checked) {
+        myResult.textContent = `Payment method: ${debitCard.value}`;
+    } else if (paypal.checked) {
+        myResult.textContent = `Payment method: ${paypal.value}`;
+    } else {
+        myResult.textContent = "Please select a payment method";
+    }
+};
+```
+
+- All three radio buttons share `name="payment"` — that's what groups them so only one can be selected.
+- You check each one with `.checked` and read its label with `.value`.
+- The final `else` handles the case where the user clicks Confirm without selecting anything.
+
+### `.checked` vs `.value` — the difference
+
+```javascript
+// .value always returns the value attribute, selected or not
+document.getElementById("creditCard").value;   // "credit card" — always
+
+// .checked tells you if it's actually selected
+document.getElementById("creditCard").checked; // true or false
+```
+
+Use `.value` to get what it says, `.checked` to know if it's ticked.
