@@ -589,3 +589,87 @@ let random = Math.floor(Math.random() * 10) + 1;
 | `Math.min(...)`  | Smallest value from arguments             | `1, 5, 3` → `1`         |
 | `Math.random()`  | Random decimal between 0 and 1            | `0.4829...`             |
 
+
+---
+
+## Random Number Generator
+
+A practical project using `Math.random()`, `Math.floor()`, user input, and DOM manipulation — all things covered so far.
+
+The user enters a minimum and maximum number, clicks a button, and a random number in that range appears on the page.
+
+### HTML
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Random Number Generator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Random Number Generator</h1>
+
+    <label>Min: </label>
+    <input id="minInput" type="number" /><br /><br />
+
+    <label>Max: </label>
+    <input id="maxInput" type="number" /><br /><br />
+
+    <button id="generateBtn">Generate</button>
+
+    <h2 id="result"></h2>
+
+    <script src="index.js"></script>
+  </body>
+</html>
+```
+
+### JavaScript
+
+```javascript
+// index.js
+const generateBtn = document.getElementById("generateBtn");
+const result = document.getElementById("result");
+
+generateBtn.onclick = function() {
+    const min = Number(document.getElementById("minInput").value);
+    const max = Number(document.getElementById("maxInput").value);
+
+    if (min > max) {
+        result.textContent = "Min can't be greater than Max";
+    } else {
+        const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+        result.textContent = randomNum;
+    }
+};
+```
+
+### How the formula works
+
+```javascript
+Math.floor(Math.random() * (max - min + 1)) + min
+```
+
+Breaking it down step by step with `min = 1` and `max = 10` as an example:
+
+1. `Math.random()` — gives a decimal from `0` up to (but not including) `1`, e.g. `0.743`
+2. `(max - min + 1)` — the size of the range, `10 - 1 + 1 = 10`
+3. `Math.random() * 10` — scales the decimal to `0` up to `9.999...`
+4. `Math.floor(...)` — removes the decimal, giving a whole number from `0` to `9`
+5. `+ min` — shifts the range up so it starts at `1` instead of `0`, giving `1` to `10`
+
+The `+ 1` inside the range makes it **inclusive** on both ends — both `min` and `max` can actually be generated.
+
+### The if/else check
+
+```javascript
+if (min > max) {
+    result.textContent = "Min can't be greater than Max";
+} else {
+    // generate the number
+}
+```
+
+This is basic input validation — if the user enters something that doesn't make sense (like min 10, max 2), the program catches it and shows a message instead of producing a nonsense result. Always good practice.
