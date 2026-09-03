@@ -1118,3 +1118,132 @@ let cleaned = input.trim().toLowerCase().replace("world", "JavaScript");
 | `.padStart(len, char)`  | Pad left to reach length                          | `"5".padStart(3,"0")` → `"005"` |
 | `.padEnd(len, char)`    | Pad right to reach length                         | `"5".padEnd(3,"0")` → `"500"`  |
 | `.repeat(n)`            | Repeat the string n times                         | `"ha".repeat(2)` → `"haha"`    |
+
+---
+
+## Equality in JavaScript
+
+JavaScript has more than one way to check equality, and they behave very differently. Getting this wrong is one of the most common sources of bugs.
+
+---
+
+### `==` — Loose equality
+
+Compares values **after converting types** to match. This is called type coercion — JS tries to make both sides the same type before comparing.
+
+```javascript
+5 == "5"       // true  — number and string, JS converts "5" to 5
+0 == false     // true  — false converts to 0
+1 == true      // true  — true converts to 1
+null == undefined  // true  — special case, only these two are loosely equal
+"" == false    // true  — both coerce to 0
+0 == ""        // true  — both coerce to 0
+```
+
+The results are often surprising and hard to reason about. Avoid `==` in real code.
+
+---
+
+### `===` — Strict equality
+
+Compares both **value and type**. No type conversion happens. This is what you should use by default.
+
+```javascript
+5 === "5"          // false — same value, different types
+5 === 5            // true
+0 === false        // false — number vs boolean
+null === undefined // false — different types
+"" === false       // false
+```
+
+Simple rule: **always use `===` unless you have a specific reason not to.**
+
+---
+
+### `!=` — Loose inequality
+
+The opposite of `==`. Returns `true` if values are not equal after type conversion.
+
+```javascript
+5 != "5"   // false — they are loosely equal, so != is false
+5 != 6     // true
+```
+
+---
+
+### `!==` — Strict inequality
+
+The opposite of `===`. Returns `true` if value or type differ. Use this instead of `!=`.
+
+```javascript
+5 !== "5"  // true  — different types
+5 !== 5    // false — same value and type
+```
+
+---
+
+### `Object.is()` — Same-value equality
+
+Works almost exactly like `===` but handles two edge cases differently.
+
+```javascript
+Object.is(5, 5);       // true
+Object.is(5, "5");     // false
+
+// The two edge cases where it differs from ===
+Object.is(NaN, NaN);   // true  — === returns false for this
+Object.is(0, -0);      // false — === returns true for this
+```
+
+`NaN === NaN` is `false` in JavaScript — one of the language's quirks. If you ever need to check if something is `NaN`, use `Number.isNaN()` or `Object.is(value, NaN)`.
+
+```javascript
+let x = NaN;
+x === NaN;          // false — doesn't work
+Number.isNaN(x);    // true  — correct way
+Object.is(x, NaN);  // true  — also works
+```
+
+---
+
+### Equality with objects and arrays
+
+Primitive values (numbers, strings, booleans) are compared by **value**. Objects and arrays are compared by **reference** — meaning whether they point to the exact same thing in memory, not whether they look the same.
+
+```javascript
+// Primitives — compared by value
+5 === 5          // true
+"hello" === "hello"  // true
+
+// Objects — compared by reference
+let a = { name: "Aashwin" };
+let b = { name: "Aashwin" };
+let c = a;
+
+a === b  // false — same content, but different objects in memory
+a === c  // true  — both point to the exact same object
+```
+
+Same applies to arrays:
+
+```javascript
+[1, 2, 3] === [1, 2, 3]  // false — two separate arrays in memory
+```
+
+To compare object or array contents, you need to check each property/element individually, or use `JSON.stringify()` as a quick workaround:
+
+```javascript
+JSON.stringify(a) === JSON.stringify(b)  // true — compares the string representation
+```
+
+---
+
+### Summary
+
+| Operator      | Type check | Coercion | Use it?              |
+|---------------|------------|----------|----------------------|
+| `==`          | No         | Yes      | Avoid                |
+| `===`         | Yes        | No       | Yes — default choice |
+| `!=`          | No         | Yes      | Avoid                |
+| `!==`         | Yes        | No       | Yes                  |
+| `Object.is()` | Yes        | No       | For NaN / -0 checks  |
