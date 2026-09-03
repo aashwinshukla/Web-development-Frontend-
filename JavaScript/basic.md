@@ -938,3 +938,183 @@ document.getElementById("creditCard").checked; // true or false
 ```
 
 Use `.value` to get what it says, `.checked` to know if it's ticked.
+
+
+
+---
+
+## String Methods
+
+Strings have built-in methods — functions you can call directly on them to get information or produce a new modified string. The original string is never changed.
+
+```javascript
+let str = "Hello, World!";
+```
+
+---
+
+### Length
+
+Not a method but a property — returns the number of characters in the string.
+
+```javascript
+console.log(str.length); // 13
+```
+
+---
+
+### Case
+
+```javascript
+str.toUpperCase(); // "HELLO, WORLD!"
+str.toLowerCase(); // "hello, world!"
+```
+
+Useful for case-insensitive comparisons:
+
+```javascript
+let input = "YeS";
+if (input.toLowerCase() === "yes") {
+    console.log("Confirmed");
+}
+```
+
+---
+
+### Trimming whitespace
+
+Removes spaces (and tabs/newlines) from the start and end of a string. Very common when dealing with user input.
+
+```javascript
+let messy = "   hello world   ";
+
+messy.trim();       // "hello world"     — both sides
+messy.trimStart();  // "hello world   "  — left side only
+messy.trimEnd();    // "   hello world"  — right side only
+```
+
+---
+
+### Checking contents
+
+```javascript
+let str = "Hello, World!";
+
+str.includes("World");      // true  — checks if substring exists anywhere
+str.startsWith("Hello");    // true  — checks the beginning
+str.endsWith("!");          // true  — checks the end
+```
+
+All three return `true` or `false`, so you can use them directly in `if` conditions:
+
+```javascript
+if (str.includes("World")) {
+    console.log("Found it");
+}
+```
+
+---
+
+### Finding position
+
+```javascript
+str.indexOf("o");      // 4  — index of first occurrence, -1 if not found
+str.lastIndexOf("o");  // 8  — index of last occurrence
+```
+
+Indexes start at `0`. Returns `-1` if the substring is not found — useful for checking existence before proceeding.
+
+---
+
+### Extracting parts
+
+```javascript
+let str = "Hello, World!";
+
+str.slice(7, 12);     // "World"  — from index 7 up to (not including) 12
+str.slice(7);         // "World!" — from index 7 to the end
+str.slice(-6);        // "orld!" — negative counts from the end
+
+str.substring(7, 12); // "World"  — similar to slice, but no negative indexes
+```
+
+`slice` is the more flexible and modern choice — use it over `substring`.
+
+---
+
+### Replacing
+
+```javascript
+str.replace("World", "JavaScript");  // "Hello, JavaScript!" — replaces first match only
+str.replaceAll("l", "r");            // "Herro, Worrd!"      — replaces every match
+```
+
+You can also use a regex for more powerful matching, but that's a separate topic.
+
+---
+
+### Splitting into an array
+
+Splits a string into an array of pieces, divided at the separator you specify.
+
+```javascript
+let csv = "apple,banana,mango,grape";
+csv.split(","); // ["apple", "banana", "mango", "grape"]
+
+let sentence = "Hello World";
+sentence.split(" ");  // ["Hello", "World"]
+sentence.split("");   // ["H","e","l","l","o"," ","W","o","r","l","d"] — every character
+```
+
+---
+
+### Padding
+
+Adds characters to the start or end to reach a desired length. Useful for formatting output.
+
+```javascript
+"5".padStart(3, "0");  // "005" — pad left to length 3
+"5".padEnd(3, "0");    // "500" — pad right to length 3
+```
+
+---
+
+### Repeat
+
+```javascript
+"ha".repeat(3); // "hahaha"
+```
+
+---
+
+### Chaining methods
+
+Since each method returns a new string, you can chain them:
+
+```javascript
+let input = "   Hello World   ";
+let cleaned = input.trim().toLowerCase().replace("world", "JavaScript");
+// "hello JavaScript"
+```
+
+---
+
+### Quick reference
+
+| Method                  | What it does                                      | Example → Result               |
+|-------------------------|---------------------------------------------------|--------------------------------|
+| `.length`               | Number of characters                              | `"hello".length` → `5`         |
+| `.toUpperCase()`        | All uppercase                                     | `"hi"` → `"HI"`                |
+| `.toLowerCase()`        | All lowercase                                     | `"HI"` → `"hi"`                |
+| `.trim()`               | Remove whitespace from both ends                  | `" hi "` → `"hi"`              |
+| `.includes(str)`        | Check if substring exists                         | `true` / `false`               |
+| `.startsWith(str)`      | Check if string starts with                       | `true` / `false`               |
+| `.endsWith(str)`        | Check if string ends with                         | `true` / `false`               |
+| `.indexOf(str)`         | Index of first match, -1 if not found             | `"hello".indexOf("l")` → `2`   |
+| `.slice(start, end)`    | Extract part of a string                          | `"hello".slice(1,3)` → `"el"`  |
+| `.replace(old, new)`    | Replace first match                               | `"aabbaa".replace("a","x")` → `"xabbaa"` |
+| `.replaceAll(old, new)` | Replace all matches                               | `"aabbaa".replaceAll("a","x")` → `"xxbbxx"` |
+| `.split(sep)`           | Split into array                                  | `"a,b".split(",")` → `["a","b"]` |
+| `.padStart(len, char)`  | Pad left to reach length                          | `"5".padStart(3,"0")` → `"005"` |
+| `.padEnd(len, char)`    | Pad right to reach length                         | `"5".padEnd(3,"0")` → `"500"`  |
+| `.repeat(n)`            | Repeat the string n times                         | `"ha".repeat(2)` → `"haha"`    |
