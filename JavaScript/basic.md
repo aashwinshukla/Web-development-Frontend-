@@ -373,3 +373,73 @@ Key things to note:
 - `NaN` stands for **Not a Number** — it's what you get when a conversion to number fails (like trying to convert `"pizza"`)
 - Any non-empty string is `true` when converted to boolean
 - `0` and `""` (empty string) are `false` when converted to boolean — these are called **falsy** values
+
+### Constants
+
+```javascript
+let pi = 3.14159;
+let radius;
+let circumference;
+
+radius = window.prompt('Enter the radius of a circle : ');
+radius = Number(radius);
+
+circumference = 2 * pi * radius;
+
+console.log(circumference);
+```
+
+here averything works fine, but the point is till when. what if someone on purpose try to tweek the program in the worg direction so it doesnt work in the intended way. thats where const comes 
+
+```javascript
+const PI = 3.14159;
+let radius;
+let circumference;
+
+pi = 420.69;
+
+radius = window.prompt('Enter the radius of a circle : ');
+radius = Number(radius);
+
+circumference = 2 * pi * radius;
+
+console.log(circumference);
+```
+now the pi value cannot be changed. 
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Website</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1 id="myH1">Enter Radius : </h1>
+
+    <label>Radius : </label>
+    <input id="myText" /><br /><br />
+    <button id="mySubmit">Submit</button>
+
+    <h3 id = "myResult"></h3>
+
+    <script src="index.js"></script>
+  </body>
+</html>
+```
+
+```javascript
+const PI = 3.14159;
+let radius;
+let circumference;
+
+pi = 420.69;
+
+document.getElementById("mySubmit").onclick = function(){
+  radius = document.getElementById("myText").value;
+  radius = Number(radius);
+  circumference = 2 * pi * radius;
+  radius = document.getElementById("mySubmit").textContent = circumference + "cm";
+}
+```
