@@ -262,23 +262,26 @@ let result = 2 + 3 * 4;    // 14, not 20 — multiplication first
 let result2 = (2 + 3) * 4; // 20 — parentheses first
 ```
 
-## Accept user Input 
+## Accepting User Input
 
-two ways to accept user input : 
-```
-1. easy way = window prompt 
-2. professional way = HTML textbox
-```
+There are two ways to accept input from a user:
 
-### Window prompt 
+1. **Window prompt** — quick and easy, but looks ugly and is rarely used in real projects
+2. **HTML text box** — the proper way, used in actual websites
+
+### Window prompt
+
 ```javascript
 // index.js
-let username; 
-username = window.prompt("Whats your username?");
+let username;
+username = window.prompt("What's your username?");
 console.log(username);
 ```
 
-### HTML Textbox
+A dialog box pops up asking the user to type something. Whatever they type is stored as a **string** in the variable.
+
+### HTML Text Box
+
 ```html
 <!-- index.html -->
 <!DOCTYPE html>
@@ -288,11 +291,11 @@ console.log(username);
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1 id = "myH1">Welcome</h1>
+    <h1 id="myH1">Welcome</h1>
 
-    <label>username : </label>
-    <input id = "myText"><br><br>
-    <button id = "mySubmit" >submit</button>
+    <label>Username: </label>
+    <input id="myText" /><br /><br />
+    <button id="mySubmit">Submit</button>
 
     <script src="index.js"></script>
   </body>
@@ -302,10 +305,71 @@ console.log(username);
 ```javascript
 // index.js
 let username;
-document.getElementById("mySubmit").onclick = function(){
+
+document.getElementById("mySubmit").onclick = function() {
     username = document.getElementById("myText").value;
     console.log(username);
-
-    document.getElementById("myH1").textContent = `Hello ${username}`
-}
+    document.getElementById("myH1").textContent = `Hello ${username}`;
+};
 ```
+
+- `.value` reads whatever the user typed into the input field
+- `.onclick` assigns a function that runs when the button is clicked
+- When the user clicks Submit, the `<h1>` text updates to greet them by name
+
+---
+
+## Data Type Conversion
+
+Sometimes you need to change a value from one type to another. This comes up a lot with user input — `window.prompt` always returns a string, even if the user types a number.
+
+### The problem
+
+```javascript
+let age = window.prompt("How old are you?");
+age += 1;
+console.log(age, typeof age);
+// if user types 25, output is "251" — string concatenation, not math
+```
+
+`window.prompt` returns a string. Adding `1` to a string just glues them together instead of doing arithmetic.
+
+### The fix — convert to a number first
+
+```javascript
+let age = window.prompt("How old are you?");
+age = Number(age);
+age += 1;
+console.log(age, typeof age);
+// now output is 26 — actual addition
+```
+
+### Converting between types
+
+JavaScript gives you three conversion functions: `Number()`, `String()`, and `Boolean()`.
+
+```javascript
+let x = "pizza";
+let y = 42;
+let z = "";
+
+x = Number(x);    // NaN — "pizza" can't be converted to a number
+y = String(y);    // "42" — number becomes a string
+z = Boolean(z);   // false — empty string is falsy
+```
+
+**What to expect from each conversion:**
+
+| Original value | `Number()`  | `String()`   | `Boolean()` |
+|----------------|-------------|--------------|-------------|
+| `"25"`         | `25`        | `"25"`       | `true`      |
+| `"pizza"`      | `NaN`       | `"pizza"`    | `true`      |
+| `0`            | `0`         | `"0"`        | `false`     |
+| `""`           | `0`         | `""`         | `false`     |
+| `true`         | `1`         | `"true"`     | `true`      |
+| `false`        | `0`         | `"false"`    | `false`     |
+
+Key things to note:
+- `NaN` stands for **Not a Number** — it's what you get when a conversion to number fails (like trying to convert `"pizza"`)
+- Any non-empty string is `true` when converted to boolean
+- `0` and `""` (empty string) are `false` when converted to boolean — these are called **falsy** values
