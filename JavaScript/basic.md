@@ -443,3 +443,75 @@ document.getElementById("mySubmit").onclick = function(){
   radius = document.getElementById("mySubmit").textContent = circumference + "cm";
 }
 ```
+
+## Lets make a counter program 
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Website</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+
+    <label id ="countLabel">0</label><br>
+    <div id = "btnContainer">
+      <button id = "decreaseBtn" class = "buttons">decrease</button>
+      <button id = "resetBtn" class = "buttons">reset</button>
+      <button id = "increaseBtn" class = "buttons">increase</button>
+    </div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
+```
+
+```css
+#countLabel{
+  display: block; 
+  text-align: center;
+  font-size: 10em;
+  font-family: Helvetica;
+}
+
+#btnContainer{
+  text-align: center;
+}
+.buttons{
+  padding: 10px 20px;
+  color: white;
+  font-size: 1.5em;
+  background-color: hs1(214, 100%, 74%);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+.butoons:hover{
+    background-color: hs1(214, 100%, 56%);
+}
+```
+```javascript
+
+const decreaseBtn = document.getElementById("decreaseBtn");
+const resetBtn = document.getElementById("resetBtn");
+const increaseBtn = document.getElementById("increaseBtn");
+const countLabel = document.getElementById("countLabel");
+let count = 0;
+
+increaseBtn.onclick = function(){
+  count++;
+  countLabel.textContent = count;
+}
+
+resetBtn.onclick = function(){
+  count = 0;
+  countLabel.textContent = count;
+}
+
+decreaseBtn.onclick = function(){
+  count--;
+  countLabel.textContent = count;
+}
+```
