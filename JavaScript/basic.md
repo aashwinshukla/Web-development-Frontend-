@@ -376,36 +376,25 @@ Key things to note:
 
 ### Constants
 
+`let` lets you reassign a variable anytime. But some values should never change — like `PI`. If someone (or you by accident) reassigns it, the whole program breaks in a subtle way that's hard to debug.
+
+That's where `const` comes in. Once assigned, it cannot be reassigned.
+
 ```javascript
+// with let — nothing stops you from accidentally changing it
 let pi = 3.14159;
-let radius;
-let circumference;
-
-radius = window.prompt('Enter the radius of a circle : ');
-radius = Number(radius);
-
-circumference = 2 * pi * radius;
-
-console.log(circumference);
+pi = 420.69; // no error, silently breaks your math
 ```
-
-here averything works fine, but the point is till when. what if someone on purpose try to tweek the program in the worg direction so it doesnt work in the intended way. thats where const comes 
 
 ```javascript
+// with const — JavaScript throws an error if you try to reassign
 const PI = 3.14159;
-let radius;
-let circumference;
-
-pi = 420.69;
-
-radius = window.prompt('Enter the radius of a circle : ');
-radius = Number(radius);
-
-circumference = 2 * pi * radius;
-
-console.log(circumference);
+PI = 420.69; // TypeError: Assignment to constant variable
 ```
-now the pi value cannot be changed. 
+
+By convention, constants are written in `ALL_CAPS` to signal that the value should never change.
+
+Here's a full circle circumference calculator using `const`:
 
 ```html
 <!-- index.html -->
@@ -416,13 +405,13 @@ now the pi value cannot be changed.
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1 id="myH1">Enter Radius : </h1>
+    <h1 id="myH1">Enter Radius:</h1>
 
-    <label>Radius : </label>
+    <label>Radius: </label>
     <input id="myText" /><br /><br />
     <button id="mySubmit">Submit</button>
 
-    <h3 id = "myResult"></h3>
+    <h3 id="myResult"></h3>
 
     <script src="index.js"></script>
   </body>
@@ -430,21 +419,24 @@ now the pi value cannot be changed.
 ```
 
 ```javascript
+// index.js
 const PI = 3.14159;
 let radius;
 let circumference;
 
-pi = 420.69;
-
-document.getElementById("mySubmit").onclick = function(){
-  radius = document.getElementById("myText").value;
-  radius = Number(radius);
-  circumference = 2 * pi * radius;
-  radius = document.getElementById("mySubmit").textContent = circumference + "cm";
-}
+document.getElementById("mySubmit").onclick = function() {
+    radius = document.getElementById("myText").value;
+    radius = Number(radius);
+    circumference = 2 * PI * radius;
+    document.getElementById("myResult").textContent = circumference + " cm";
+};
 ```
 
-## Lets make a counter program 
+---
+
+## Counter Program
+
+A practical example that brings together `const`, `onclick`, and updating the page — a simple counter with increase, decrease, and reset buttons.
 
 ```html
 <!-- index.html -->
@@ -455,12 +447,11 @@ document.getElementById("mySubmit").onclick = function(){
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-
-    <label id ="countLabel">0</label><br>
-    <div id = "btnContainer">
-      <button id = "decreaseBtn" class = "buttons">decrease</button>
-      <button id = "resetBtn" class = "buttons">reset</button>
-      <button id = "increaseBtn" class = "buttons">increase</button>
+    <label id="countLabel">0</label><br />
+    <div id="btnContainer">
+      <button id="decreaseBtn" class="buttons">Decrease</button>
+      <button id="resetBtn" class="buttons">Reset</button>
+      <button id="increaseBtn" class="buttons">Increase</button>
     </div>
 
     <script src="index.js"></script>
@@ -469,49 +460,132 @@ document.getElementById("mySubmit").onclick = function(){
 ```
 
 ```css
-#countLabel{
-  display: block; 
-  text-align: center;
-  font-size: 10em;
-  font-family: Helvetica;
+/* style.css */
+#countLabel {
+    display: block;
+    text-align: center;
+    font-size: 10em;
+    font-family: Helvetica;
 }
 
-#btnContainer{
-  text-align: center;
+#btnContainer {
+    text-align: center;
 }
-.buttons{
-  padding: 10px 20px;
-  color: white;
-  font-size: 1.5em;
-  background-color: hs1(214, 100%, 74%);
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.25s;
+
+.buttons {
+    padding: 10px 20px;
+    color: white;
+    font-size: 1.5em;
+    background-color: hsl(214, 100%, 74%);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.25s;
 }
-.butoons:hover{
-    background-color: hs1(214, 100%, 56%);
+
+.buttons:hover {
+    background-color: hsl(214, 100%, 56%);
 }
 ```
-```javascript
 
+```javascript
+// index.js
 const decreaseBtn = document.getElementById("decreaseBtn");
 const resetBtn = document.getElementById("resetBtn");
 const increaseBtn = document.getElementById("increaseBtn");
 const countLabel = document.getElementById("countLabel");
 let count = 0;
 
-increaseBtn.onclick = function(){
-  count++;
-  countLabel.textContent = count;
-}
+increaseBtn.onclick = function() {
+    count++;
+    countLabel.textContent = count;
+};
 
-resetBtn.onclick = function(){
-  count = 0;
-  countLabel.textContent = count;
-}
+resetBtn.onclick = function() {
+    count = 0;
+    countLabel.textContent = count;
+};
 
-decreaseBtn.onclick = function(){
-  count--;
-  countLabel.textContent = count;
-}
+decreaseBtn.onclick = function() {
+    count--;
+    countLabel.textContent = count;
+};
 ```
+
+The DOM references (`decreaseBtn`, `resetBtn`, etc.) are `const` because you never need to point them at a different element — the element stays the same, only `count` changes. `count` is `let` because its value changes on every click.
+
+## Math Object
+
+JavaScript has a built-in `Math` object with constants and methods for common mathematical operations.
+
+### Constants
+
+```javascript
+console.log(Math.PI); // 3.141592653589793
+console.log(Math.E);  // 2.718281828459045 — Euler's number
+```
+
+### Rounding methods
+
+```javascript
+let x = 3.21;
+
+Math.round(x);  // 3 — rounds to nearest integer (up if .5 or above)
+Math.floor(x);  // 3 — always rounds down
+Math.ceil(x);   // 4 — always rounds up
+Math.trunc(x);  // 3 — removes the decimal, no rounding
+```
+
+### Power, root, and logarithm
+
+```javascript
+let x = 3.21;
+let y = 2;
+
+Math.pow(x, y);  // 10.3041 — x to the power of y (same as x ** y)
+Math.sqrt(x);    // 1.7916 — square root of x
+Math.log(x);     // 1.1663 — natural logarithm of x (base e)
+```
+
+### Trigonometry
+
+```javascript
+Math.sin(x);  // sine of x (in radians)
+Math.cos(x);  // cosine of x
+Math.tan(x);  // tangent of x
+```
+
+Note: these work in **radians**, not degrees. To convert degrees to radians: `degrees * (Math.PI / 180)`.
+
+### Other useful methods
+
+```javascript
+Math.abs(-5);        // 5 — absolute value, removes the negative sign
+Math.sign(-5);       // -1 — returns -1 (negative), 0, or 1 (positive)
+Math.max(1, 5, 3);   // 5 — largest value from the list
+Math.min(1, 5, 3);   // 1 — smallest value from the list
+Math.random();       // random decimal between 0 (inclusive) and 1 (exclusive)
+```
+
+`Math.random()` is very commonly used. To get a random whole number in a range:
+
+```javascript
+// Random integer from 1 to 10
+let random = Math.floor(Math.random() * 10) + 1;
+```
+
+### Quick reference
+
+| Method           | What it does                              | Example → Result        |
+|------------------|-------------------------------------------|-------------------------|
+| `Math.round(x)`  | Rounds to nearest integer                 | `3.21` → `3`            |
+| `Math.floor(x)`  | Rounds down                               | `3.99` → `3`            |
+| `Math.ceil(x)`   | Rounds up                                 | `3.01` → `4`            |
+| `Math.trunc(x)`  | Removes decimal, no rounding              | `3.99` → `3`            |
+| `Math.pow(x, y)` | x to the power of y                       | `2, 3` → `8`            |
+| `Math.sqrt(x)`   | Square root                               | `9` → `3`               |
+| `Math.abs(x)`    | Absolute value                            | `-5` → `5`              |
+| `Math.sign(x)`   | Sign of the number (-1, 0, or 1)          | `-5` → `-1`             |
+| `Math.max(...)`  | Largest value from arguments              | `1, 5, 3` → `5`         |
+| `Math.min(...)`  | Smallest value from arguments             | `1, 5, 3` → `1`         |
+| `Math.random()`  | Random decimal between 0 and 1            | `0.4829...`             |
+
