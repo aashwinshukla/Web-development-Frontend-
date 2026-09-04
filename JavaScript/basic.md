@@ -2262,3 +2262,163 @@ console.log(rest); // ["banana", "mango"]
 | `.every(fn)`        | Check if all elements pass condition               | No                 |
 | `.some(fn)`         | Check if any element passes condition              | No                 |
 | `.reduce(fn, init)` | Reduce array to a single value                     | No                 |
+
+---
+
+## Spread Operator
+
+The spread operator `...` expands an iterable — like an array or string — into individual elements. Think of it as unpacking the contents.
+
+---
+
+### Spreading arrays
+
+```javascript
+let nums = [1, 2, 3];
+
+console.log(nums);    // [1, 2, 3] — the array
+console.log(...nums); // 1 2 3     — the individual values
+```
+
+#### Combining arrays
+
+```javascript
+let a = [1, 2, 3];
+let b = [4, 5, 6];
+
+let combined = [...a, ...b];
+console.log(combined); // [1, 2, 3, 4, 5, 6]
+
+// You can insert values in between too
+let combined2 = [...a, 99, ...b];
+console.log(combined2); // [1, 2, 3, 99, 4, 5, 6]
+```
+
+#### Copying an array
+
+```javascript
+let original = [1, 2, 3];
+let copy = [...original];
+
+copy.push(4);
+console.log(original); // [1, 2, 3] — unchanged
+console.log(copy);     // [1, 2, 3, 4]
+```
+
+Without spread, doing `let copy = original` doesn't copy — both variables point to the same array, so changes affect both.
+
+```javascript
+let original = [1, 2, 3];
+let copy = original; // not a copy — same reference
+
+copy.push(4);
+console.log(original); // [1, 2, 3, 4] — also changed!
+```
+
+---
+
+### Spreading into function arguments
+
+When a function expects separate arguments but you have an array, spread unpacks it.
+
+```javascript
+let nums = [5, 1, 8, 3, 9];
+
+Math.max(nums);    // NaN — Math.max doesn't accept an array
+Math.max(...nums); // 9   — spread unpacks the array into arguments
+```
+
+```javascript
+function add(a, b, c) {
+    return a + b + c;
+}
+
+let values = [1, 2, 3];
+add(...values); // 6 — same as add(1, 2, 3)
+```
+
+---
+
+### Spreading strings
+
+Spread works on any iterable, including strings — it splits into individual characters.
+
+```javascript
+let str = "hello";
+let chars = [...str];
+console.log(chars); // ["h", "e", "l", "l", "o"]
+```
+
+---
+
+### Spreading objects
+
+Spread also works on objects — it copies all key-value pairs into a new object.
+
+```javascript
+let person = { name: "Aashwin", age: 19 };
+let copy = { ...person };
+
+copy.age = 25;
+console.log(person.age); // 19 — original unchanged
+console.log(copy.age);   // 25
+```
+
+#### Merging objects
+
+```javascript
+let defaults = { theme: "dark", fontSize: 16, language: "en" };
+let userSettings = { fontSize: 20, language: "hi" };
+
+let settings = { ...defaults, ...userSettings };
+console.log(settings);
+// { theme: "dark", fontSize: 20, language: "hi" }
+```
+
+When keys overlap, the last one wins — `userSettings` overrides `defaults`.
+
+#### Adding or overriding properties
+
+```javascript
+let person = { name: "Aashwin", age: 19 };
+
+let updated = { ...person, age: 20, city: "Lucknow" };
+console.log(updated);
+// { name: "Aashwin", age: 20, city: "Lucknow" }
+```
+
+The original `person` is untouched. This pattern is used a lot in React and modern JS.
+
+---
+
+### Rest vs Spread — same syntax, opposite direction
+
+They both use `...` but do the opposite thing depending on context.
+
+```javascript
+// Spread — expands an array/object into individual elements
+let arr = [1, 2, 3];
+console.log(...arr); // 1 2 3 — unpacks outward
+
+// Rest — collects individual elements into an array
+function sum(...nums) {  // nums collects all arguments into an array
+    return nums.reduce((total, n) => total + n, 0);
+}
+sum(1, 2, 3, 4, 5); // 15
+```
+
+Rest in destructuring (also seen in the Arrays section):
+
+```javascript
+let [first, ...rest] = [1, 2, 3, 4, 5];
+console.log(first); // 1
+console.log(rest);  // [2, 3, 4, 5]
+
+let { name, ...others } = { name: "Aashwin", age: 19, city: "Lucknow" };
+console.log(name);   // "Aashwin"
+console.log(others); // { age: 19, city: "Lucknow" }
+```
+
+**Simple rule:**
+- `...` in a function call or array/object literal → **spread** (expands)
+- `...` in a function parameter or destructuring → **rest** (collects)
