@@ -2535,3 +2535,174 @@ If no checkbox is checked, `charPool` would be empty and the loop would only pro
 
 **`return`:**
 Exits the function early so the password generation code below never runs when there's an error.
+
+---
+
+## Callbacks
+
+A callback is a function passed as an argument to another function, to be called later — either after something finishes or for each item in a collection.
+
+You've already been using callbacks without realising it. `forEach`, `map`, `filter`, and `onclick` all use callbacks.
+
+```javascript
+// This is a callback — a function passed into forEach
+fruits.forEach(function(fruit) {
+    console.log(fruit);
+});
+
+// This is also a callback — a function passed into onclick
+btn.onclick = function() {
+    console.log("clicked");
+};
+```
+
+---
+
+### The basic idea
+
+```javascript
+function greet(name) {
+    console.log(`Hello, ${name}!`);
+}
+
+function processUser(name, callback) {
+    console.log("Processing user...");
+    callback(name); // calls whatever function was passed in
+}
+
+processUser("Aashwin", greet);
+// Processing user...
+// Hello, Aashwin!
+```
+
+- `greet` is passed into `processUser` as the `callback` parameter
+- `processUser` calls it later using `callback(name)`
+- You pass the function itself — `greet`, not `greet()`. Adding `()` would call it immediately instead of passing it.
+
+---
+
+### Anonymous callbacks
+
+Most of the time you don't name the callback — you write it inline.
+
+```javascript
+processUser("Aashwin", function(name) {
+    console.log(`Hello, ${name}!`);
+});
+```
+
+Or with an arrow function:
+
+```javascript
+processUser("Aashwin", name => console.log(`Hello, ${name}!`));
+```
+
+All three versions do the same thing.
+
+---
+
+### Callbacks in array methods
+
+You've already used these — `map`, `filter`, `forEach` all take a callback and run it on each element.
+
+```javascript
+let nums = [1, 2, 3, 4, 5];
+
+// The arrow function here IS the callback
+let doubled = nums.map(n => n * 2);
+let evens = nums.filter(n => n % 2 === 0);
+nums.forEach(n => console.log(n));
+```
+
+---
+
+### Callbacks for timing
+
+Two built-in functions use callbacks to run code after a delay or on a repeating interval.
+
+#### `setTimeout` — run once after a delay
+
+```javascript
+setTimeout(function() {
+    console.log("This runs after 2 seconds");
+}, 2000); // 2000 milliseconds = 2 seconds
+```
+
+```javascript
+// Arrow function version
+setTimeout(() => console.log("Done!"), 2000);
+```
+
+#### `setInterval` — run repeatedly on an interval
+
+```javascript
+let count = 0;
+
+const interval = setInterval(function() {
+    count++;
+    console.log(count);
+
+    if (count === 5) {
+        clearInterval(interval); // stops the interval
+    }
+}, 1000); // runs every 1 second
+```
+
+- `setInterval` returns an ID you can store in a variable
+- `clearInterval(id)` stops it — always stop intervals when you're done or they run forever
+
+---
+
+### Why callbacks exist
+
+JavaScript runs in a single thread — it can only do one thing at a time. When something takes time (waiting for a timer, fetching data from a server, reading a file), JavaScript doesn't sit and wait. It moves on and comes back to run the callback when the task is done.
+
+```javascript
+console.log("1 - before timeout");
+
+setTimeout(() => {
+    console.log("2 - inside timeout");
+}, 1000);
+
+console.log("3 - after timeout");
+
+// Output order:
+// 1 - before timeout
+// 3 - after timeout
+// 2 - inside timeout  ← runs last, after 1 second
+```
+
+The code doesn't pause at `setTimeout`. It registers the callback, moves on to `console.log("3...")`, and comes back to run the callback after 1 second.
+
+---
+
+### Callback hell
+
+When you have callbacks that depend on other callbacks, the code starts nesting deeply — this is called callback hell.
+
+```javascript
+setTimeout(() => {
+    console.log("Step 1");
+    setTimeout(() => {
+        console.log("Step 2");
+        setTimeout(() => {
+            console.log("Step 3");
+        }, 1000);
+    }, 1000);
+}, 1000);
+```
+
+Hard to read, hard to maintain. This is the problem that **Promises** and **async/await** were built to solve — but those are a separate topic for later.
+
+---
+
+### Quick reference
+
+| Use case              | Example                                          |
+|-----------------------|--------------------------------------------------|
+| Array iteration       | `arr.forEach(item => ...)` |
+| Array transformation  | `arr.map(item => ...)` |
+| Event handling        | `btn.onclick = function() {...}` |
+| Run after delay       | `setTimeout(() => ..., ms)` |
+| Run on interval       | `setInterval(() => ..., ms)` |
+| Stop interval         | `clearInterval(id)` |
