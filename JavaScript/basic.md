@@ -1948,3 +1948,317 @@ The inner function can see everything above it. The outer function cannot see in
 | `var`   | Yes           | No          | Yes (as undefined) | No   |
 | `let`   | Yes           | Yes         | No             | Yes      |
 | `const` | Yes           | Yes         | No             | Yes      |
+
+---
+
+## Arrays
+
+An array is an ordered collection of values stored in a single variable. Instead of making separate variables for each item, you group them together.
+
+```javascript
+// Without array — messy
+let fruit1 = "apple";
+let fruit2 = "banana";
+let fruit3 = "mango";
+
+// With array — clean
+let fruits = ["apple", "banana", "mango"];
+```
+
+Arrays can hold any data type — numbers, strings, booleans, even other arrays.
+
+```javascript
+let mixed = [42, "hello", true, null];
+```
+
+---
+
+### Accessing elements
+
+Arrays are zero-indexed — the first element is at index `0`.
+
+```javascript
+let fruits = ["apple", "banana", "mango"];
+
+console.log(fruits[0]); // "apple"
+console.log(fruits[1]); // "banana"
+console.log(fruits[2]); // "mango"
+console.log(fruits[3]); // undefined — index doesn't exist
+```
+
+Access the last element without knowing the length:
+
+```javascript
+console.log(fruits[fruits.length - 1]); // "mango"
+```
+
+---
+
+### Modifying elements
+
+```javascript
+fruits[1] = "grape";
+console.log(fruits); // ["apple", "grape", "mango"]
+```
+
+---
+
+### Array length
+
+```javascript
+console.log(fruits.length); // 3
+```
+
+---
+
+### Adding and removing elements
+
+```javascript
+let fruits = ["apple", "banana", "mango"];
+
+// Add to the end
+fruits.push("grape");
+console.log(fruits); // ["apple", "banana", "mango", "grape"]
+
+// Remove from the end
+fruits.pop();
+console.log(fruits); // ["apple", "banana", "mango"]
+
+// Add to the beginning
+fruits.unshift("strawberry");
+console.log(fruits); // ["strawberry", "apple", "banana", "mango"]
+
+// Remove from the beginning
+fruits.shift();
+console.log(fruits); // ["apple", "banana", "mango"]
+```
+
+---
+
+### Finding elements
+
+```javascript
+let fruits = ["apple", "banana", "mango"];
+
+fruits.indexOf("banana");     // 1  — index of first match, -1 if not found
+fruits.includes("mango");     // true — returns boolean
+fruits.includes("grape");     // false
+```
+
+---
+
+### Removing and inserting — splice
+
+`splice` modifies the array in place. It can remove, replace, or insert elements at any position.
+
+```javascript
+let fruits = ["apple", "banana", "mango", "grape"];
+
+// Remove 1 element at index 1
+fruits.splice(1, 1);
+console.log(fruits); // ["apple", "mango", "grape"]
+
+// Remove 2 elements starting at index 0
+fruits.splice(0, 2);
+console.log(fruits); // ["grape"]
+
+// Insert without removing — splice(index, 0, ...items)
+fruits.splice(1, 0, "banana", "mango");
+console.log(fruits); // ["grape", "banana", "mango"]
+
+// Replace — remove 1 at index 0, insert "apple"
+fruits.splice(0, 1, "apple");
+console.log(fruits); // ["apple", "banana", "mango"]
+```
+
+---
+
+### Extracting a portion — slice
+
+Returns a new array from start index up to (not including) end index. Does not modify the original.
+
+```javascript
+let fruits = ["apple", "banana", "mango", "grape", "kiwi"];
+
+fruits.slice(1, 3);  // ["banana", "mango"]
+fruits.slice(2);     // ["mango", "grape", "kiwi"] — from index 2 to end
+fruits.slice(-2);    // ["grape", "kiwi"] — last 2 elements
+```
+
+---
+
+### Sorting and reversing
+
+```javascript
+let fruits = ["mango", "apple", "banana"];
+
+fruits.sort();
+console.log(fruits); // ["apple", "banana", "mango"] — alphabetical
+
+fruits.reverse();
+console.log(fruits); // ["mango", "banana", "apple"]
+```
+
+For numbers, `sort()` needs a compare function — by default it sorts as strings which gives wrong results:
+
+```javascript
+let nums = [10, 1, 5, 3, 8];
+
+nums.sort();                     // [1, 10, 3, 5, 8] — wrong, sorts as strings
+nums.sort((a, b) => a - b);      // [1, 3, 5, 8, 10] — ascending
+nums.sort((a, b) => b - a);      // [10, 8, 5, 3, 1] — descending
+```
+
+---
+
+### Joining and combining
+
+```javascript
+let fruits = ["apple", "banana", "mango"];
+
+// Join array into a string
+fruits.join(", ");   // "apple, banana, mango"
+fruits.join(" | ");  // "apple | banana | mango"
+fruits.join("");     // "applebananamango"
+
+// Combine two arrays into one
+let veggies = ["carrot", "pea"];
+let all = fruits.concat(veggies);
+console.log(all); // ["apple", "banana", "mango", "carrot", "pea"]
+
+// Spread operator — modern alternative to concat
+let all2 = [...fruits, ...veggies];
+console.log(all2); // ["apple", "banana", "mango", "carrot", "pea"]
+```
+
+---
+
+### Looping over arrays
+
+```javascript
+let fruits = ["apple", "banana", "mango"];
+
+// for loop
+for (let i = 0; i < fruits.length; i++) {
+    console.log(fruits[i]);
+}
+
+// for...of — cleaner when you just need the values
+for (let fruit of fruits) {
+    console.log(fruit);
+}
+
+// forEach — a method that runs a function on each element
+fruits.forEach(function(fruit) {
+    console.log(fruit);
+});
+
+// Arrow function version — same thing, shorter
+fruits.forEach(fruit => console.log(fruit));
+```
+
+---
+
+### Useful array methods
+
+#### `map` — transform every element, returns a new array
+
+```javascript
+let nums = [1, 2, 3, 4, 5];
+
+let doubled = nums.map(n => n * 2);
+console.log(doubled); // [2, 4, 6, 8, 10]
+console.log(nums);    // [1, 2, 3, 4, 5] — original unchanged
+```
+
+#### `filter` — keep only elements that pass a condition, returns a new array
+
+```javascript
+let nums = [1, 2, 3, 4, 5, 6];
+
+let evens = nums.filter(n => n % 2 === 0);
+console.log(evens); // [2, 4, 6]
+```
+
+#### `find` — returns the first element that matches, or `undefined`
+
+```javascript
+let nums = [5, 12, 8, 130, 44];
+
+let found = nums.find(n => n > 10);
+console.log(found); // 12 — first one over 10
+```
+
+#### `every` and `some`
+
+```javascript
+let nums = [2, 4, 6, 8];
+
+nums.every(n => n % 2 === 0); // true  — every element is even
+nums.some(n => n > 5);        // true  — at least one is over 5
+nums.every(n => n > 5);       // false — not every element is over 5
+```
+
+#### `reduce` — boil the entire array down to a single value
+
+```javascript
+let nums = [1, 2, 3, 4, 5];
+
+let sum = nums.reduce((total, n) => total + n, 0);
+console.log(sum); // 15
+```
+
+- First argument is the **accumulator** (`total`) — carries the running result
+- Second argument is the **current element** (`n`)
+- `0` after the arrow function is the starting value of the accumulator
+
+---
+
+### Destructuring
+
+A clean way to unpack values from an array into variables.
+
+```javascript
+let fruits = ["apple", "banana", "mango"];
+
+let [first, second, third] = fruits;
+console.log(first);  // "apple"
+console.log(second); // "banana"
+console.log(third);  // "mango"
+
+// Skip elements with a comma
+let [a, , c] = fruits;
+console.log(a); // "apple"
+console.log(c); // "mango"
+
+// Rest — collect remaining elements
+let [head, ...rest] = fruits;
+console.log(head); // "apple"
+console.log(rest); // ["banana", "mango"]
+```
+
+---
+
+### Quick reference
+
+| Method              | What it does                                       | Modifies original? |
+|---------------------|----------------------------------------------------|--------------------|
+| `.push(val)`        | Add to end                                         | Yes                |
+| `.pop()`            | Remove from end                                    | Yes                |
+| `.unshift(val)`     | Add to beginning                                   | Yes                |
+| `.shift()`          | Remove from beginning                              | Yes                |
+| `.splice(i, n)`     | Remove/insert at index                             | Yes                |
+| `.sort()`           | Sort in place                                      | Yes                |
+| `.reverse()`        | Reverse in place                                   | Yes                |
+| `.slice(s, e)`      | Extract a portion                                  | No                 |
+| `.concat(arr)`      | Combine arrays                                     | No                 |
+| `.indexOf(val)`     | Find index of value                                | No                 |
+| `.includes(val)`    | Check if value exists                              | No                 |
+| `.join(sep)`        | Convert to string                                  | No                 |
+| `.forEach(fn)`      | Run function on each element                       | No                 |
+| `.map(fn)`          | Transform each element, return new array           | No                 |
+| `.filter(fn)`       | Keep elements that pass condition                  | No                 |
+| `.find(fn)`         | Return first match                                 | No                 |
+| `.every(fn)`        | Check if all elements pass condition               | No                 |
+| `.some(fn)`         | Check if any element passes condition              | No                 |
+| `.reduce(fn, init)` | Reduce array to a single value                     | No                 |
