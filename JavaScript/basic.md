@@ -1552,3 +1552,247 @@ resetBtn.onclick = function() {
 - `gameOver` is a boolean flag — once the user wins, further guesses are blocked until reset
 - The `return` keyword exits the function early — the code below it doesn't run
 - Reset generates a fresh `secretNumber` and clears everything back to the starting state
+
+---
+
+## Functions
+
+A function is a reusable block of code that runs only when you call it. Instead of writing the same logic multiple times, you write it once in a function and call it whenever you need it.
+
+---
+
+### Declaring a function
+
+```javascript
+function greet() {
+    console.log("Hello!");
+}
+```
+
+This defines the function but doesn't run it yet.
+
+### Calling a function
+
+```javascript
+greet(); // Hello!
+greet(); // Hello! — can call it as many times as you want
+```
+
+---
+
+### Parameters and arguments
+
+**Parameters** are the variables listed in the function definition. **Arguments** are the actual values you pass in when calling it.
+
+```javascript
+function greet(name) {       // name is the parameter
+    console.log(`Hello, ${name}!`);
+}
+
+greet("Aashwin");  // "Aashwin" is the argument — output: Hello, Aashwin!
+greet("Alice");    // output: Hello, Alice!
+```
+
+Multiple parameters:
+
+```javascript
+function add(a, b) {
+    console.log(a + b);
+}
+
+add(5, 3);  // 8
+add(10, 20); // 30
+```
+
+---
+
+### Return values
+
+Functions can send a value back to wherever they were called using `return`.
+
+```javascript
+function add(a, b) {
+    return a + b;
+}
+
+let result = add(5, 3);
+console.log(result); // 8
+```
+
+Once `return` runs, the function stops — nothing after it executes.
+
+```javascript
+function checkAge(age) {
+    if (age >= 18) {
+        return "Adult";
+    }
+    return "Minor"; // only reaches here if age < 18
+}
+
+console.log(checkAge(25)); // "Adult"
+console.log(checkAge(15)); // "Minor"
+```
+
+A function without a `return` statement returns `undefined` by default.
+
+---
+
+### Default parameters
+
+If an argument isn't passed, you can set a fallback value.
+
+```javascript
+function greet(name = "stranger") {
+    console.log(`Hello, ${name}!`);
+}
+
+greet("Aashwin"); // Hello, Aashwin!
+greet();          // Hello, stranger!
+```
+
+---
+
+### Function expressions
+
+Instead of declaring a function with the `function` keyword at the top level, you can store it in a variable.
+
+```javascript
+const add = function(a, b) {
+    return a + b;
+};
+
+console.log(add(5, 3)); // 8
+```
+
+Behaves the same way. The main difference is that regular function declarations are **hoisted** (available anywhere in the file even before the line they're written on), while function expressions are not.
+
+---
+
+### Arrow functions
+
+A shorter syntax for writing functions, introduced in modern JavaScript.
+
+```javascript
+// Regular function
+function add(a, b) {
+    return a + b;
+}
+
+// Arrow function — same thing
+const add = (a, b) => {
+    return a + b;
+};
+
+// Even shorter — if there's only one expression, you can drop the braces and return
+const add = (a, b) => a + b;
+```
+
+Single parameter — parentheses are optional:
+
+```javascript
+const double = n => n * 2;
+double(5); // 10
+```
+
+No parameters — empty parentheses required:
+
+```javascript
+const sayHi = () => console.log("Hi!");
+sayHi();
+```
+
+Arrow functions are very commonly used, especially as callbacks (functions passed into other functions).
+
+---
+
+### Scope
+
+Variables declared inside a function only exist inside that function — they are not accessible from outside.
+
+```javascript
+function myFunction() {
+    let message = "Hello";
+    console.log(message); // works fine
+}
+
+myFunction();
+console.log(message); // ReferenceError — message doesn't exist out here
+```
+
+Variables declared outside a function are in the **global scope** and can be read inside any function:
+
+```javascript
+let message = "Hello";
+
+function myFunction() {
+    console.log(message); // works — can access the outer variable
+}
+
+myFunction();
+```
+
+---
+
+### Functions calling other functions
+
+```javascript
+function square(n) {
+    return n * n;
+}
+
+function sumOfSquares(a, b) {
+    return square(a) + square(b);
+}
+
+console.log(sumOfSquares(3, 4)); // 9 + 16 = 25
+```
+
+---
+
+### Rewriting the counter and guessing game with functions
+
+The counter and guessing game you built earlier had repeated code — the same `countLabel.textContent = count` line appeared in every button handler. Functions clean that up:
+
+```javascript
+// index.js — counter with functions
+const decreaseBtn = document.getElementById("decreaseBtn");
+const resetBtn = document.getElementById("resetBtn");
+const increaseBtn = document.getElementById("increaseBtn");
+const countLabel = document.getElementById("countLabel");
+let count = 0;
+
+function updateDisplay() {
+    countLabel.textContent = count;
+}
+
+increaseBtn.onclick = function() {
+    count++;
+    updateDisplay();
+};
+
+resetBtn.onclick = function() {
+    count = 0;
+    updateDisplay();
+};
+
+decreaseBtn.onclick = function() {
+    count--;
+    updateDisplay();
+};
+```
+
+`updateDisplay()` is called in three places but written once. If you ever want to change how the display works, you change it in one place instead of three.
+
+---
+
+### Quick reference
+
+| Concept              | Syntax                                 |
+|----------------------|----------------------------------------|
+| Declaration          | `function name() {}`                   |
+| Parameters           | `function name(a, b) {}`               |
+| Return               | `return value;`                        |
+| Default parameter    | `function name(a = 10) {}`             |
+| Function expression  | `const name = function() {};`          |
+| Arrow function       | `const name = (a, b) => a + b;`        |
+| Call a function      | `name();` or `name(arg1, arg2);`       |
