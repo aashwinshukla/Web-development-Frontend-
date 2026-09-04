@@ -1796,3 +1796,155 @@ decreaseBtn.onclick = function() {
 | Function expression  | `const name = function() {};`          |
 | Arrow function       | `const name = (a, b) => a + b;`        |
 | Call a function      | `name();` or `name(arg1, arg2);`       |
+
+
+
+
+
+
+---
+
+## Variable Scope
+
+Scope determines where a variable can be accessed. If you try to use a variable outside its scope, you get a `ReferenceError`.
+
+---
+
+### Global scope
+
+A variable declared outside any function or block is in the global scope. It can be accessed from anywhere in the file.
+
+```javascript
+let name = "Aashwin";
+
+function greet() {
+    console.log(name); // accessible — name is global
+}
+
+greet();
+console.log(name); // also accessible out here
+```
+
+---
+
+### Function scope
+
+A variable declared inside a function exists only inside that function. It is created when the function runs and destroyed when it finishes.
+
+```javascript
+function greet() {
+    let message = "Hello";
+    console.log(message); // works
+}
+
+greet();
+console.log(message); // ReferenceError — message doesn't exist out here
+```
+
+Two functions can have variables with the same name and they won't interfere with each other — each has its own scope.
+
+```javascript
+function funcA() {
+    let x = 10;
+    console.log(x); // 10
+}
+
+function funcB() {
+    let x = 99;
+    console.log(x); // 99
+}
+```
+
+---
+
+### Block scope
+
+A block is any code inside `{}` — an `if` statement, a loop, etc. Variables declared with `let` or `const` inside a block only exist within that block.
+
+```javascript
+if (true) {
+    let blockVar = "I'm inside a block";
+    console.log(blockVar); // works
+}
+
+console.log(blockVar); // ReferenceError — outside the block
+```
+
+```javascript
+for (let i = 0; i < 3; i++) {
+    console.log(i); // 0, 1, 2
+}
+
+console.log(i); // ReferenceError — i only exists inside the for loop
+```
+
+---
+
+### `var` — the old way (no block scope)
+
+Before `let` and `const` existed, `var` was the only way to declare variables. It behaves differently — it has function scope but **not block scope**, meaning it leaks out of blocks.
+
+```javascript
+if (true) {
+    var x = "I leak out";
+}
+console.log(x); // "I leak out" — no error, var ignores the block
+
+if (true) {
+    let y = "I stay inside";
+}
+console.log(y); // ReferenceError — let respects the block
+```
+
+`var` also gets **hoisted** — moved to the top of its function scope before code runs, but initialized as `undefined`.
+
+```javascript
+console.log(a); // undefined — hoisted but not yet assigned
+var a = 5;
+console.log(a); // 5
+```
+
+```javascript
+console.log(b); // ReferenceError — let is not hoisted the same way
+let b = 5;
+```
+
+**Don't use `var`.** Always use `let` or `const`. `var` exists in old code you may encounter, so it's useful to know what it does — but don't write it yourself.
+
+---
+
+### Scope chain
+
+When JavaScript looks up a variable, it starts in the current scope and works its way outward until it finds it — or throws a `ReferenceError` if it never does.
+
+```javascript
+let a = "global";
+
+function outer() {
+    let b = "outer";
+
+    function inner() {
+        let c = "inner";
+        console.log(c); // "inner"  — found in own scope
+        console.log(b); // "outer"  — not here, looks up to outer
+        console.log(a); // "global" — not here or outer, looks up to global
+    }
+
+    inner();
+    console.log(c); // ReferenceError — c only exists inside inner
+}
+
+outer();
+```
+
+The inner function can see everything above it. The outer function cannot see inside the inner one.
+
+---
+
+### Summary
+
+| Keyword | Function scope | Block scope | Hoisted        | Use it?  |
+|---------|---------------|-------------|----------------|----------|
+| `var`   | Yes           | No          | Yes (as undefined) | No   |
+| `let`   | Yes           | Yes         | No             | Yes      |
+| `const` | Yes           | Yes         | No             | Yes      |
