@@ -2422,3 +2422,116 @@ console.log(others); // { age: 19, city: "Lucknow" }
 **Simple rule:**
 - `...` in a function call or array/object literal → **spread** (expands)
 - `...` in a function parameter or destructuring → **rest** (collects)
+
+---
+
+## Random Password Generator
+
+A practical project using arrays, string methods, loops, `Math.random()`, spread, and the checked property — all covered so far.
+
+The user picks a password length and which character types to include (uppercase, lowercase, numbers, symbols), clicks Generate, and a random password appears.
+
+### HTML
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Password Generator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Password Generator</h1>
+
+    <label>Length: </label>
+    <input type="number" id="lengthInput" value="12" min="4" max="32" /><br /><br />
+
+    <input type="checkbox" id="includeUpper" checked />
+    <label for="includeUpper">Uppercase (A–Z)</label><br />
+
+    <input type="checkbox" id="includeLower" checked />
+    <label for="includeLower">Lowercase (a–z)</label><br />
+
+    <input type="checkbox" id="includeNumbers" checked />
+    <label for="includeNumbers">Numbers (0–9)</label><br />
+
+    <input type="checkbox" id="includeSymbols" />
+    <label for="includeSymbols">Symbols (!@#$...)</label><br /><br />
+
+    <button id="generateBtn">Generate</button>
+
+    <h2 id="result"></h2>
+    <p id="errorMsg"></p>
+
+    <script src="index.js"></script>
+  </body>
+</html>
+```
+
+### JavaScript
+
+```javascript
+// index.js
+const generateBtn = document.getElementById("generateBtn");
+const result = document.getElementById("result");
+const errorMsg = document.getElementById("errorMsg");
+
+const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const lower = "abcdefghijklmnopqrstuvwxyz";
+const numbers = "0123456789";
+const symbols = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+generateBtn.onclick = function() {
+    const length = Number(document.getElementById("lengthInput").value);
+    const includeUpper = document.getElementById("includeUpper").checked;
+    const includeLower = document.getElementById("includeLower").checked;
+    const includeNumbers = document.getElementById("includeNumbers").checked;
+    const includeSymbols = document.getElementById("includeSymbols").checked;
+
+    // Validation — at least one type must be selected
+    if (!includeUpper && !includeLower && !includeNumbers && !includeSymbols) {
+        errorMsg.textContent = "Please select at least one character type.";
+        result.textContent = "";
+        return;
+    }
+
+    errorMsg.textContent = "";
+
+    // Build the pool of allowed characters
+    let charPool = "";
+    if (includeUpper)   charPool += upper;
+    if (includeLower)   charPool += lower;
+    if (includeNumbers) charPool += numbers;
+    if (includeSymbols) charPool += symbols;
+
+    // Generate the password
+    let password = "";
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charPool.length);
+        password += charPool[randomIndex];
+    }
+
+    result.textContent = password;
+};
+```
+
+### How it works
+
+**Character pool:**
+Each checkbox adds a string of characters to `charPool`. If only uppercase and numbers are checked, `charPool` becomes `"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"`. The password is only built from those characters.
+
+**The loop:**
+```javascript
+const randomIndex = Math.floor(Math.random() * charPool.length);
+password += charPool[randomIndex];
+```
+Each iteration picks a random index within `charPool`, grabs the character at that index, and appends it to `password`. This runs `length` times.
+
+**`charPool[randomIndex]`** — you can access individual characters in a string by index, exactly like an array. `"hello"[1]` is `"e"`.
+
+**Validation:**
+If no checkbox is checked, `charPool` would be empty and the loop would only produce empty characters. The `if` block catches this before the loop runs and shows an error instead.
+
+**`return`:**
+Exits the function early so the password generation code below never runs when there's an error.
