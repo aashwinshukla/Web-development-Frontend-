@@ -2706,3 +2706,256 @@ Hard to read, hard to maintain. This is the problem that **Promises** and **asyn
 | Run after delay       | `setTimeout(() => ..., ms)` |
 | Run on interval       | `setInterval(() => ..., ms)` |
 | Stop interval         | `clearInterval(id)` |
+
+---
+
+## Objects
+
+An object stores related data and functionality together as key-value pairs. Where an array uses numbered indexes, an object uses named keys.
+
+```javascript
+let person = {
+    name: "Aashwin",
+    age: 19,
+    city: "Lucknow",
+    isStudent: true
+};
+```
+
+Each entry is a **property** — a key and its value separated by `:`, properties separated by `,`.
+
+---
+
+### Accessing properties
+
+```javascript
+// Dot notation — standard way
+console.log(person.name); // "Aashwin"
+console.log(person.age);  // 19
+
+// Bracket notation — used when the key is dynamic or has spaces
+console.log(person["name"]); // "Aashwin"
+
+let key = "city";
+console.log(person[key]);    // "Lucknow" — useful when key is in a variable
+```
+
+---
+
+### Modifying properties
+
+```javascript
+person.age = 20;           // update existing
+person.email = "a@b.com";  // add new property
+delete person.isStudent;   // remove a property
+```
+
+---
+
+### Methods
+
+A method is a function stored as a property of an object.
+
+```javascript
+let person = {
+    name: "Aashwin",
+    age: 19,
+    greet: function() {
+        console.log(`Hi, I'm ${this.name}`);
+    }
+};
+
+person.greet(); // Hi, I'm Aashwin
+```
+
+`this` refers to the object the method belongs to — so `this.name` is `person.name`.
+
+Arrow function shorthand for methods:
+
+```javascript
+let person = {
+    name: "Aashwin",
+    greet() {                          // shorthand method syntax
+        console.log(`Hi, I'm ${this.name}`);
+    }
+};
+```
+
+**Note:** avoid arrow functions for methods that use `this` — arrow functions don't have their own `this` and it won't work as expected.
+
+---
+
+### Checking if a property exists
+
+```javascript
+console.log("name" in person);   // true
+console.log("phone" in person);  // false
+```
+
+---
+
+### Looping over an object
+
+```javascript
+let person = { name: "Aashwin", age: 19, city: "Lucknow" };
+
+for (let key in person) {
+    console.log(`${key}: ${person[key]}`);
+}
+// name: Aashwin
+// age: 19
+// city: Lucknow
+```
+
+---
+
+### Object destructuring
+
+Unpack properties into variables — cleaner than accessing each one individually.
+
+```javascript
+let person = { name: "Aashwin", age: 19, city: "Lucknow" };
+
+let { name, age, city } = person;
+console.log(name); // "Aashwin"
+console.log(age);  // 19
+```
+
+Rename while destructuring:
+
+```javascript
+let { name: fullName, age: years } = person;
+console.log(fullName); // "Aashwin"
+console.log(years);    // 19
+```
+
+Default values:
+
+```javascript
+let { name, country = "India" } = person;
+console.log(country); // "India" — used because person has no country property
+```
+
+---
+
+### Nested objects
+
+Objects can contain other objects.
+
+```javascript
+let person = {
+    name: "Aashwin",
+    address: {
+        city: "Lucknow",
+        country: "India"
+    }
+};
+
+console.log(person.address.city);    // "Lucknow"
+console.log(person.address.country); // "India"
+```
+
+Destructuring nested objects:
+
+```javascript
+let { name, address: { city, country } } = person;
+console.log(city);    // "Lucknow"
+console.log(country); // "India"
+```
+
+---
+
+### Array of objects
+
+The most common data structure you'll work with — a list of items where each item has multiple properties.
+
+```javascript
+let students = [
+    { name: "Aashwin", grade: "A" },
+    { name: "Alice",   grade: "B" },
+    { name: "Bob",     grade: "A" }
+];
+
+// Access
+console.log(students[0].name); // "Aashwin"
+
+// Loop
+students.forEach(student => {
+    console.log(`${student.name}: ${student.grade}`);
+});
+
+// Filter — only A grade students
+let aStudents = students.filter(student => student.grade === "A");
+
+// Map — get just the names
+let names = students.map(student => student.name);
+console.log(names); // ["Aashwin", "Alice", "Bob"]
+```
+
+---
+
+### Copying objects
+
+Like arrays, objects are reference types — assigning an object to a new variable doesn't copy it.
+
+```javascript
+let original = { name: "Aashwin" };
+let copy = original;
+
+copy.name = "Alice";
+console.log(original.name); // "Alice" — original changed too
+```
+
+To make a proper copy:
+
+```javascript
+// Spread — shallow copy
+let copy = { ...original };
+
+// Object.assign — also shallow copy
+let copy2 = Object.assign({}, original);
+```
+
+Both are **shallow copies** — they copy top-level properties, but nested objects are still shared by reference. For a full deep copy, use `JSON.parse(JSON.stringify(obj))` as a quick workaround.
+
+```javascript
+let deep = JSON.parse(JSON.stringify(original)); // full independent copy
+```
+
+---
+
+### Useful Object methods
+
+```javascript
+let person = { name: "Aashwin", age: 19, city: "Lucknow" };
+
+Object.keys(person);    // ["name", "age", "city"]   — array of keys
+Object.values(person);  // ["Aashwin", 19, "Lucknow"] — array of values
+Object.entries(person); // [["name","Aashwin"], ["age",19], ["city","Lucknow"]] — array of pairs
+```
+
+`Object.entries` is useful when you want to loop with both key and value using `for...of`:
+
+```javascript
+for (let [key, value] of Object.entries(person)) {
+    console.log(`${key}: ${value}`);
+}
+```
+
+---
+
+### Quick reference
+
+| Operation              | Syntax                              |
+|------------------------|-------------------------------------|
+| Create object          | `let obj = { key: value }`          |
+| Access property        | `obj.key` or `obj["key"]`           |
+| Add/update property    | `obj.key = value`                   |
+| Delete property        | `delete obj.key`                    |
+| Check property exists  | `"key" in obj`                      |
+| Loop over keys         | `for (let key in obj)`              |
+| Destructure            | `let { key } = obj`                 |
+| Get all keys           | `Object.keys(obj)`                  |
+| Get all values         | `Object.values(obj)`                |
+| Get key-value pairs    | `Object.entries(obj)`               |
+| Shallow copy           | `{ ...obj }`                        |
