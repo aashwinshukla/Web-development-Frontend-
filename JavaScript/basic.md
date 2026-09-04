@@ -2959,3 +2959,353 @@ for (let [key, value] of Object.entries(person)) {
 | Get all values         | `Object.values(obj)`                |
 | Get key-value pairs    | `Object.entries(obj)`               |
 | Shallow copy           | `{ ...obj }`                        |
+
+---
+
+## Classes
+
+A class is a blueprint for creating objects. Instead of writing the same object structure repeatedly, you define it once in a class and create as many instances as you need.
+
+---
+
+### Constructor
+
+The `constructor` method runs automatically when a new object is created from the class. It sets up the initial properties.
+
+```javascript
+class Person {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+
+let person1 = new Person("Aashwin", 19);
+let person2 = new Person("Alice", 25);
+
+console.log(person1.name); // "Aashwin"
+console.log(person2.age);  // 25
+```
+
+- `new Person(...)` creates a new object and runs the constructor
+- `this` inside the constructor refers to the new object being created
+- Each object created from the class is called an **instance**
+
+---
+
+### Methods
+
+Methods defined inside a class are shared across all instances — they don't get copied to each object.
+
+```javascript
+class Person {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    greet() {
+        console.log(`Hi, I'm ${this.name} and I'm ${this.age} years old`);
+    }
+
+    birthday() {
+        this.age++;
+        console.log(`Happy birthday ${this.name}! You are now ${this.age}`);
+    }
+}
+
+let person1 = new Person("Aashwin", 19);
+person1.greet();    // Hi, I'm Aashwin and I'm 19 years old
+person1.birthday(); // Happy birthday Aashwin! You are now 20
+```
+
+---
+
+### Getters and Setters
+
+Getters and setters let you define properties that behave like values but run code when accessed or assigned.
+
+```javascript
+class Person {
+    constructor(firstName, lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    get fullName() {
+        return `${this.firstName} ${this.lastName}`;
+    }
+
+    set fullName(value) {
+        let parts = value.split(" ");
+        this.firstName = parts[0];
+        this.lastName = parts[1];
+    }
+}
+
+let person = new Person("Aashwin", "Shukla");
+
+console.log(person.fullName);       // "Aashwin Shukla" — calls the getter
+person.fullName = "Alice Smith";    // calls the setter
+console.log(person.firstName);      // "Alice"
+console.log(person.lastName);       // "Smith"
+```
+
+- `get` — accessed like a property (`person.fullName`), not called like a method (`person.fullName()`)
+- `set` — assigned like a property (`person.fullName = "..."`)
+- Useful for computed properties and validation
+
+---
+
+### Static
+
+A `static` method or property belongs to the **class itself**, not to any instance. You call it on the class, not on an object.
+
+```javascript
+class MathHelper {
+    static add(a, b) {
+        return a + b;
+    }
+
+    static PI = 3.14159;
+}
+
+console.log(MathHelper.add(5, 3)); // 8
+console.log(MathHelper.PI);        // 3.14159
+
+let m = new MathHelper();
+m.add(5, 3); // TypeError — static methods don't exist on instances
+```
+
+Common use cases — utility functions and constants that belong to the concept but don't need an object.
+
+---
+
+### Private class fields
+
+Properties prefixed with `#` are private — they can only be accessed from inside the class. Trying to access them from outside throws an error.
+
+```javascript
+class BankAccount {
+    #balance = 0;  // private field
+
+    constructor(initialBalance) {
+        this.#balance = initialBalance;
+    }
+
+    deposit(amount) {
+        this.#balance += amount;
+    }
+
+    getBalance() {
+        return this.#balance;
+    }
+}
+
+let account = new BankAccount(1000);
+account.deposit(500);
+console.log(account.getBalance()); // 1500
+console.log(account.#balance);     // SyntaxError — private field
+```
+
+Private fields prevent outside code from directly modifying internal state — the only way to interact with `#balance` is through the methods the class exposes.
+
+---
+
+### Inheritance
+
+Inheritance lets one class extend another — the child class gets all the properties and methods of the parent, and can add its own on top.
+
+```javascript
+class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+
+    speak() {
+        console.log(`${this.name} makes a sound`);
+    }
+}
+
+class Dog extends Animal {
+    speak() {
+        console.log(`${this.name} barks`);
+    }
+}
+
+class Cat extends Animal {
+    speak() {
+        console.log(`${this.name} meows`);
+    }
+}
+
+let dog = new Dog("Rex");
+let cat = new Cat("Luna");
+
+dog.speak(); // Rex barks
+cat.speak(); // Luna meows
+```
+
+- `extends` sets up the inheritance
+- The child class overrides the parent's `speak()` method with its own version — this is called **method overriding**
+
+---
+
+### super
+
+`super` refers to the parent class. Used in two ways:
+
+**1. Call the parent constructor:**
+
+```javascript
+class Animal {
+    constructor(name) {
+        this.name = name;
+    }
+}
+
+class Dog extends Animal {
+    constructor(name, breed) {
+        super(name);       // calls Animal's constructor to set this.name
+        this.breed = breed;
+    }
+
+    describe() {
+        console.log(`${this.name} is a ${this.breed}`);
+    }
+}
+
+let dog = new Dog("Rex", "Labrador");
+dog.describe(); // Rex is a Labrador
+```
+
+If a child class has a `constructor`, it **must** call `super()` before using `this` — otherwise JavaScript throws an error.
+
+**2. Call a parent method:**
+
+```javascript
+class Animal {
+    speak() {
+        console.log(`${this.name} makes a sound`);
+    }
+}
+
+class Dog extends Animal {
+    speak() {
+        super.speak();     // calls the parent's speak first
+        console.log(`${this.name} also barks`);
+    }
+}
+
+let dog = new Dog("Rex");
+dog.speak();
+// Rex makes a sound
+// Rex also barks
+```
+
+---
+
+### `instanceof`
+
+Checks whether an object was created from a specific class — returns `true` or `false`.
+
+```javascript
+let dog = new Dog("Rex", "Labrador");
+
+console.log(dog instanceof Dog);    // true
+console.log(dog instanceof Animal); // true  — Dog extends Animal
+console.log(dog instanceof Cat);    // false
+```
+
+An instance of a child class is also an instance of its parent.
+
+---
+
+### Prototypes
+
+Every object in JavaScript has a hidden link to another object called its **prototype**. When you access a property or method, JavaScript first looks at the object itself, then walks up the prototype chain until it finds it or reaches `null`.
+
+```javascript
+let person = { name: "Aashwin" };
+
+console.log(person.toString()); // "[object Object]"
+```
+
+`person` doesn't have a `toString` method — JavaScript found it on `Object.prototype`, the prototype of all plain objects.
+
+Classes use prototypes under the hood. Methods defined in a class are stored on the prototype, not copied to each instance — that's why they're memory-efficient.
+
+```javascript
+class Person {
+    greet() {
+        console.log("hello");
+    }
+}
+
+let p = new Person();
+console.log(p.hasOwnProperty("greet")); // false — greet is on the prototype
+```
+
+You rarely need to work with prototypes directly when using classes, but understanding that they exist explains why `instanceof` works up the chain and why methods are shared.
+
+---
+
+### Method chaining
+
+Method chaining lets you call multiple methods on the same object in a single line. Each method returns `this` — the object itself — so the next method can be called immediately after.
+
+```javascript
+class Calculator {
+    constructor() {
+        this.value = 0;
+    }
+
+    add(n) {
+        this.value += n;
+        return this;        // returns the object so you can chain
+    }
+
+    subtract(n) {
+        this.value -= n;
+        return this;
+    }
+
+    multiply(n) {
+        this.value *= n;
+        return this;
+    }
+
+    getResult() {
+        return this.value;
+    }
+}
+
+let result = new Calculator()
+    .add(10)
+    .multiply(2)
+    .subtract(5)
+    .getResult();
+
+console.log(result); // 15
+```
+
+You've already seen this with string methods — `.trim().toLowerCase().replace(...)`. The same idea, built into the string prototype.
+
+---
+
+### Quick reference
+
+| Concept           | Syntax                                        |
+|-------------------|-----------------------------------------------|
+| Define class      | `class Name {}`                               |
+| Constructor       | `constructor(params) { this.x = x; }`         |
+| Method            | `methodName() {}`                             |
+| Getter            | `get propName() { return ...; }`              |
+| Setter            | `set propName(value) { ... }`                 |
+| Static            | `static methodName() {}` or `static x = val` |
+| Private field     | `#fieldName`                                  |
+| Inherit           | `class Child extends Parent {}`               |
+| Call parent constructor | `super(args)`                           |
+| Call parent method | `super.methodName()`                         |
+| Check instance    | `obj instanceof ClassName`                    |
+| Chain methods     | return `this` from each method                |
