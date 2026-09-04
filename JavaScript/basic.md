@@ -1456,3 +1456,99 @@ for (let i = 1; i <= 3; i++) {
 | `do...while` | Same as while but must run at least once                      |
 | `for...of`   | You need each value from an array or string                   |
 | `for...in`   | You need each key from an object                              |
+
+---
+
+## Number Guessing Game
+
+A practical project using everything covered so far — `Math.random()`, `Math.floor()`, variables, `const`, conditionals, loops, DOM manipulation, and `.checked`.
+
+The computer picks a random number between 1 and 100. The user keeps guessing until they get it right.
+
+### HTML
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Number Guessing Game</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Number Guessing Game</h1>
+    <p>I'm thinking of a number between 1 and 100</p>
+
+    <label>Your guess: </label>
+    <input type="number" id="guessInput" /><br /><br />
+    <button id="guessBtn">Guess</button>
+    <button id="resetBtn">New Game</button>
+
+    <p id="result"></p>
+    <p id="attempts"></p>
+
+    <script src="index.js"></script>
+  </body>
+</html>
+```
+
+### JavaScript
+
+```javascript
+// index.js
+const guessBtn = document.getElementById("guessBtn");
+const resetBtn = document.getElementById("resetBtn");
+const guessInput = document.getElementById("guessInput");
+const result = document.getElementById("result");
+const attempts = document.getElementById("attempts");
+
+let secretNumber = Math.floor(Math.random() * 100) + 1;
+let attemptCount = 0;
+let gameOver = false;
+
+guessBtn.onclick = function() {
+    if (gameOver) {
+        result.textContent = "Game over. Click New Game to play again.";
+        return;
+    }
+
+    const guess = Number(guessInput.value);
+
+    if (guess < 1 || guess > 100) {
+        result.textContent = "Please enter a number between 1 and 100.";
+        return;
+    }
+
+    attemptCount++;
+    attempts.textContent = `Attempts: ${attemptCount}`;
+
+    if (guess === secretNumber) {
+        result.textContent = `Correct! You guessed it in ${attemptCount} attempt(s)!`;
+        gameOver = true;
+    } else if (guess < secretNumber) {
+        result.textContent = "Too low. Try higher.";
+    } else {
+        result.textContent = "Too high. Try lower.";
+    }
+
+    guessInput.value = "";
+};
+
+resetBtn.onclick = function() {
+    secretNumber = Math.floor(Math.random() * 100) + 1;
+    attemptCount = 0;
+    gameOver = false;
+    result.textContent = "";
+    attempts.textContent = "";
+    guessInput.value = "";
+};
+```
+
+### How it works
+
+- `secretNumber` is generated once when the page loads using `Math.random()` and `Math.floor()`
+- Every time the user clicks Guess, `attemptCount` increments and the guess is compared to `secretNumber` using `===`
+- `if / else if / else` gives the user a hint — too low, too high, or correct
+- `gameOver` is a boolean flag — once the user wins, further guesses are blocked until reset
+- The `return` keyword exits the function early — the code below it doesn't run
+- Reset generates a fresh `secretNumber` and clears everything back to the starting state
