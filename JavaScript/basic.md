@@ -3814,3 +3814,153 @@ setInterval(updateClock, 1000); // then update every second
 - `String(...).padStart(2, "0")` ensures single digits show as `09` instead of `9` — without this the clock jumps around in width
 - `updateClock()` is called once immediately before `setInterval` starts — otherwise there's a one second blank gap when the page first loads
 - `setInterval(updateClock, 1000)` calls the function every 1000 milliseconds (1 second) keeping the display in sync
+
+---
+
+## Stopwatch
+
+A practical project using `setInterval`, `clearInterval`, `Date`, `padStart`, conditionals, and DOM manipulation.
+
+### HTML
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Stopwatch</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="display">00:00:00</div>
+
+    <div id="btnContainer">
+      <button id="startBtn">Start</button>
+      <button id="stopBtn">Stop</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
+```
+
+### CSS
+
+```css
+/* style.css */
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #1a1a2e;
+}
+
+#display {
+    font-family: monospace;
+    font-size: 6rem;
+    color: #00ff99;
+    letter-spacing: 8px;
+    margin-bottom: 40px;
+}
+
+#btnContainer {
+    display: flex;
+    gap: 16px;
+}
+
+button {
+    padding: 12px 28px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #16213e;
+    color: white;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #0f3460;
+}
+```
+
+### JavaScript
+
+```javascript
+// index.js
+const display   = document.getElementById("display");
+const startBtn  = document.getElementById("startBtn");
+const stopBtn   = document.getElementById("stopBtn");
+const resetBtn  = document.getElementById("resetBtn");
+
+let interval = null;
+let elapsedTime = 0;
+let startTime = 0;
+
+function updateDisplay() {
+    const hours   = String(Math.floor(elapsedTime / 3600000)).padStart(2, "0");
+    const minutes = String(Math.floor((elapsedTime % 3600000) / 60000)).padStart(2, "0");
+    const seconds = String(Math.floor((elapsedTime % 60000) / 1000)).padStart(2, "0");
+
+    display.textContent = `${hours}:${minutes}:${seconds}`;
+}
+
+startBtn.onclick = function() {
+    if (interval) return; // already running — do nothing
+
+    startTime = Date.now() - elapsedTime; // account for any previous elapsed time
+
+    interval = setInterval(function() {
+        elapsedTime = Date.now() - startTime;
+        updateDisplay();
+    }, 1000);
+};
+
+stopBtn.onclick = function() {
+    clearInterval(interval);
+    interval = null;
+};
+
+resetBtn.onclick = function() {
+    clearInterval(interval);
+    interval = null;
+    elapsedTime = 0;
+    startTime = 0;
+    updateDisplay();
+};
+```
+
+### How it works
+
+**`Date.now()`** returns the current time in milliseconds — a single number, much simpler than creating a full `Date` object when you just need the current timestamp.
+
+**`elapsedTime`** stores how many milliseconds have passed in total. Every tick it is recalculated as:
+```javascript
+elapsedTime = Date.now() - startTime;
+```
+
+**Why not just increment a counter?**
+Incrementing a variable by 1000 every second sounds simpler but drifts over time — `setInterval` is not perfectly precise. Using `Date.now()` to calculate the real elapsed time keeps the stopwatch accurate no matter how long it runs.
+
+**Start with resume:**
+```javascript
+startTime = Date.now() - elapsedTime;
+```
+When you hit Start after stopping, `elapsedTime` still holds the previous time. Subtracting it from `Date.now()` shifts `startTime` back so the elapsed calculation continues from where it left off — not from zero.
+
+**`if (interval) return`** — prevents starting a second interval if Start is clicked while already running. Two intervals running at once would make the clock tick twice as fast.
+
+**Converting milliseconds to hours, minutes, seconds:**
+```javascript
+hours   = Math.floor(elapsedTime / 3600000)
+minutes = Math.floor((elapsedTime % 3600000) / 60000)
+seconds = Math.floor((elapsedTime % 60000) / 1000)
+```
+- 1 hour = 3,600,000 ms
+- 1 minute = 60,000 ms
+- 1 second = 1,000 ms
+- `%` (modulo) removes the higher units before dividing into the smaller one
