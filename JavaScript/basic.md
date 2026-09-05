@@ -3741,3 +3741,76 @@ Not as common now that `let` and `const` have block scope, but you'll see IIFEs 
 | Function factory   | A function that returns other functions with closed-over state |
 | Loop gotcha        | Use `let` not `var` in loops with callbacks                |
 | IIFE               | Self-invoking function that creates an isolated scope      |
+
+---
+
+## Digital Clock
+
+A practical project using `Date`, `setInterval`, `padStart`, and DOM manipulation — all covered so far.
+
+### HTML
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Digital Clock</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="clock">00:00:00</div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
+```
+
+### CSS
+
+```css
+/* style.css */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #1a1a2e;
+}
+
+#clock {
+    font-family: monospace;
+    font-size: 6rem;
+    color: #00ff99;
+    letter-spacing: 8px;
+}
+```
+
+### JavaScript
+
+```javascript
+// index.js
+const clock = document.getElementById("clock");
+
+function updateClock() {
+    const now = new Date();
+
+    const hours   = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const seconds = String(now.getSeconds()).padStart(2, "0");
+
+    clock.textContent = `${hours}:${minutes}:${seconds}`;
+}
+
+updateClock(); // run immediately so there's no blank on load
+setInterval(updateClock, 1000); // then update every second
+```
+
+### How it works
+
+- `new Date()` is called every second to get the current time
+- `.getHours()`, `.getMinutes()`, `.getSeconds()` extract the time components
+- `String(...).padStart(2, "0")` ensures single digits show as `09` instead of `9` — without this the clock jumps around in width
+- `updateClock()` is called once immediately before `setInterval` starts — otherwise there's a one second blank gap when the page first loads
+- `setInterval(updateClock, 1000)` calls the function every 1000 milliseconds (1 second) keeping the display in sync
