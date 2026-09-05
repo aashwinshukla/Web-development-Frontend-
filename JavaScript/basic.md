@@ -4439,3 +4439,220 @@ Promises go into the **microtask queue** which has higher priority than the regu
 | POST request         | `await fetch(url, { method: "POST", body: ... })`  |
 | Parse JSON response  | `await response.json()`                            |
 | Run promises in parallel | `await Promise.all([p1, p2])`                  |
+
+---
+
+## Error Object
+
+When something goes wrong in JavaScript, it throws an **Error object**. Understanding it helps you catch the right errors, give useful messages, and debug faster.
+
+---
+
+### try / catch / finally
+
+You've seen this in async code — it works the same way for synchronous errors.
+
+```javascript
+try {
+    // code that might throw
+    let result = 10 / 0;
+    console.log(undeclaredVariable); // ReferenceError
+} catch (error) {
+    console.log(error.message); // error message string
+    console.log(error.name);    // error type
+    console.log(error.stack);   // where it happened (file + line number)
+} finally {
+    console.log("This always runs");
+}
+```
+
+- `error.name` — the type of error (`"ReferenceError"`, `"TypeError"`, etc.)
+- `error.message` — human-readable description of what went wrong
+- `error.stack` — full stack trace showing where the error originated
+
+---
+
+### Built-in error types
+
+JavaScript has several built-in error types — each for a different kind of mistake.
+
+| Error type       | When it occurs                                              |
+|------------------|-------------------------------------------------------------|
+| `ReferenceError` | Using a variable that doesn't exist                         |
+| `TypeError`      | Using a value in the wrong way (calling non-function, etc.) |
+| `SyntaxError`    | Code that can't be parsed (can't be caught at runtime)      |
+| `RangeError`     | Value is outside the allowed range                          |
+| `URIError`       | Invalid characters in `encodeURI` / `decodeURI`             |
+| `EvalError`      | Issue with `eval()` — rarely seen                           |
+
+```javascript
+// ReferenceError
+console.log(x); // x is not defined
+
+// TypeError
+null.toString(); // can't call method on null
+
+// RangeError
+new Array(-1); // invalid array length
+
+// SyntaxError — can't be caught, breaks before code runs
+// let x = ; // this would be a SyntaxError
+```
+
+---
+
+### Throwing errors manually
+
+You can throw your own errors using `throw`. This stops execution and jumps to the nearest `catch`.
+
+```javascript
+function divide(a, b) {
+    if (b === 0) {
+        throw new Error("Cannot divide by zero");
+    }
+    return a / b;
+}
+
+try {
+    console.log(divide(10, 0));
+} catch (error) {
+    console.log(error.message); // "Cannot divide by zero"
+}
+```
+
+You can throw any value — but always throw an `Error` object so you get `.message` and `.stack`.
+
+---
+
+### Throwing specific error types
+
+```javascript
+function getUser(id) {
+    if (typeof id !== "number") {
+        throw new TypeError("id must be a number");
+    }
+    if (id <= 0) {
+        throw new RangeError("id must be greater than 0");
+    }
+    return { id, name: "Aashwin" };
+}
+
+try {
+    getUser("abc");
+} catch (error) {
+    console.log(error.name);    // "TypeError"
+    console.log(error.message); // "id must be a number"
+}
+```
+
+---
+
+### Checking error type in catch
+
+When a `try` block can throw different kinds of errors, you can check which one it is using `instanceof`.
+
+```javascript
+try {
+    getUser(-1);
+} catch (error) {
+    if (error instanceof TypeError) {
+        console.log("Wrong type:", error.message);
+    } else if (error instanceof RangeError) {
+        console.log("Out of range:", error.message);
+    } else {
+        console.log("Unknown error:", error.message);
+    }
+}
+```
+
+---
+
+### Custom error classes
+
+Extend the built-in `Error` class to create your own error types — useful for specific application errors.
+
+```javascript
+class ValidationError extends Error {
+    constructor(message, field) {
+        super(message);          // passes message to Error
+        this.name = "ValidationError";
+        this.field = field;      // custom property
+    }
+}
+
+class NetworkError extends Error {
+    constructor(message, statusCode) {
+        super(message);
+        this.name = "NetworkError";
+        this.statusCode = statusCode;
+    }
+}
+
+// Using them
+try {
+    throw new ValidationError("Email is invalid", "email");
+} catch (error) {
+    if (error instanceof ValidationError) {
+        console.log(`${error.name} on field "${error.field}": ${error.message}`);
+        // ValidationError on field "email": Email is invalid
+    }
+}
+```
+
+---
+
+### Re-throwing errors
+
+Sometimes you catch an error, handle what you can, and rethrow what you can't.
+
+```javascript
+function processData(data) {
+    try {
+        JSON.parse(data);
+    } catch (error) {
+        if (error instanceof SyntaxError) {
+            console.log("Invalid JSON — skipping");
+        } else {
+            throw error; // not a JSON error — rethrow for someone else to handle
+        }
+    }
+}
+```
+
+---
+
+### Errors in async / await
+
+Works exactly the same with `try/catch` — already covered in the Async section, but here's a reminder:
+
+```javascript
+async function fetchData() {
+    try {
+        const response = await fetch("https://api.example.com/data");
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.log("Fetch failed:", error.message);
+    }
+}
+```
+
+---
+
+### Quick reference
+
+| Concept                  | Syntax                                        |
+|--------------------------|-----------------------------------------------|
+| Catch an error           | `try { } catch (error) { }`                   |
+| Always run cleanup       | `finally { }`                                 |
+| Error name               | `error.name`                                  |
+| Error message            | `error.message`                               |
+| Stack trace              | `error.stack`                                 |
+| Throw an error           | `throw new Error("message")`                  |
+| Throw specific type      | `throw new TypeError("message")`              |
+| Check error type         | `error instanceof TypeError`                  |
+| Custom error class       | `class MyError extends Error {}`              |
+| Rethrow                  | `throw error` inside catch                    |
