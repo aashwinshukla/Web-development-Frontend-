@@ -4896,3 +4896,325 @@ Returns `false` for `Infinity` and `NaN` — catches division by zero (`10/0` gi
 
 **Error handling:**
 If the expression is malformed (like `5+*3`) the `Function` call throws a `SyntaxError`. The `catch` block shows `"Error"` on the display and clears the expression so the user can start fresh.
+
+---
+
+## DOM
+
+The DOM (Document Object Model) is the browser's representation of the HTML page as a tree of objects. JavaScript uses the DOM to read, change, add, or remove anything on the page.
+
+```
+document
+└── html
+    ├── head
+    │   └── title
+    └── body
+        ├── h1
+        ├── p
+        └── div
+            └── button
+```
+
+Every HTML element becomes a **node** in this tree. JavaScript can navigate and manipulate any of them.
+
+---
+
+### Selecting elements
+
+#### By ID
+```javascript
+const btn = document.getElementById("myBtn");
+```
+Returns one element or `null` if not found.
+
+#### By class name
+```javascript
+const items = document.getElementsByClassName("item");
+```
+Returns an HTMLCollection (live list) of all matching elements.
+
+#### By tag name
+```javascript
+const paragraphs = document.getElementsByTagName("p");
+```
+Returns an HTMLCollection of all `<p>` elements.
+
+#### querySelector — CSS selector, first match
+```javascript
+const btn = document.querySelector("#myBtn");       // by id
+const item = document.querySelector(".item");       // by class
+const p = document.querySelector("p");              // by tag
+const input = document.querySelector("input[type='text']"); // by attribute
+```
+Returns the first match or `null`.
+
+#### querySelectorAll — CSS selector, all matches
+```javascript
+const items = document.querySelectorAll(".item");
+```
+Returns a NodeList. Use `.forEach()` to loop over it.
+
+---
+
+### Reading and changing content
+
+```javascript
+const el = document.getElementById("myEl");
+
+// Text content — plain text, no HTML
+el.textContent;           // get
+el.textContent = "Hello"; // set
+
+// Inner HTML — includes HTML tags
+el.innerHTML;                          // get
+el.innerHTML = "<strong>Hello</strong>"; // set — use with caution
+
+// Value — for inputs
+const input = document.getElementById("myInput");
+input.value;          // get what user typed
+input.value = "text"; // set
+```
+
+> Never use `innerHTML` with user-provided content — it opens the door to XSS (cross-site scripting) attacks. Use `textContent` for plain text.
+
+---
+
+### Changing styles
+
+#### Inline styles
+```javascript
+const el = document.getElementById("box");
+
+el.style.color = "red";
+el.style.backgroundColor = "#1a1a2e"; // camelCase, not kebab-case
+el.style.fontSize = "24px";
+el.style.display = "none";            // hide element
+el.style.display = "";                // remove inline style, revert to CSS
+```
+
+#### Classes — the better way
+Toggling classes is cleaner than setting individual styles — keeps styling in CSS where it belongs.
+
+```javascript
+el.classList.add("active");
+el.classList.remove("active");
+el.classList.toggle("active");        // adds if absent, removes if present
+el.classList.contains("active");      // true or false
+el.classList.replace("old", "new");   // swap one class for another
+```
+
+---
+
+### Changing attributes
+
+```javascript
+const img = document.getElementById("myImg");
+
+img.getAttribute("src");              // get attribute value
+img.setAttribute("src", "new.jpg");   // set attribute value
+img.removeAttribute("alt");           // remove attribute
+img.hasAttribute("src");              // true or false
+```
+
+Common attributes can also be accessed directly as properties:
+
+```javascript
+img.src = "new.jpg";
+img.alt = "A photo";
+
+const link = document.getElementById("myLink");
+link.href = "https://example.com";
+
+const input = document.getElementById("myInput");
+input.disabled = true;
+input.placeholder = "Type here...";
+```
+
+---
+
+### Traversing the DOM
+
+Navigate between nodes relative to a given element.
+
+```javascript
+const el = document.getElementById("myEl");
+
+el.parentElement;           // direct parent
+el.children;                // HTMLCollection of direct children
+el.firstElementChild;       // first child element
+el.lastElementChild;        // last child element
+el.nextElementSibling;      // next sibling
+el.previousElementSibling;  // previous sibling
+```
+
+```javascript
+// Loop through all children
+const list = document.getElementById("myList");
+for (let item of list.children) {
+    console.log(item.textContent);
+}
+```
+
+---
+
+### Creating and inserting elements
+
+```javascript
+// Create a new element
+const newDiv = document.createElement("div");
+newDiv.textContent = "I'm new";
+newDiv.classList.add("card");
+
+// Append to end of parent
+document.body.appendChild(newDiv);
+
+// Insert before a specific element
+const parent = document.getElementById("container");
+const reference = document.getElementById("existing");
+parent.insertBefore(newDiv, reference);
+
+// Modern — insertAdjacentElement
+// positions: "beforebegin", "afterbegin", "beforeend", "afterend"
+reference.insertAdjacentElement("afterend", newDiv);
+
+// Modern — append (can take multiple, accepts strings too)
+parent.append(newDiv, "some text");
+parent.prepend(newDiv); // insert at the beginning
+```
+
+---
+
+### Removing elements
+
+```javascript
+const el = document.getElementById("myEl");
+
+el.remove(); // removes itself — modern, clean
+
+// Older way — remove via parent
+el.parentElement.removeChild(el);
+```
+
+---
+
+### Event listeners
+
+You've been using `.onclick` — `addEventListener` is the more flexible way. It lets you attach multiple listeners to the same element and remove them later.
+
+```javascript
+const btn = document.getElementById("myBtn");
+
+btn.addEventListener("click", function() {
+    console.log("clicked");
+});
+
+// Arrow function version
+btn.addEventListener("click", () => console.log("clicked"));
+```
+
+#### Common events
+
+| Event          | Fires when                                 |
+|----------------|--------------------------------------------|
+| `click`        | Element is clicked                         |
+| `dblclick`     | Element is double-clicked                  |
+| `mouseover`    | Mouse enters the element                   |
+| `mouseout`     | Mouse leaves the element                   |
+| `keydown`      | Key is pressed down                        |
+| `keyup`        | Key is released                            |
+| `input`        | Input value changes (every keystroke)      |
+| `change`       | Input loses focus after value changed      |
+| `submit`       | Form is submitted                          |
+| `load`         | Page or resource finishes loading          |
+| `DOMContentLoaded` | HTML is parsed, before images load    |
+| `scroll`       | User scrolls                               |
+| `resize`       | Window is resized                          |
+
+#### The event object
+
+Every event listener receives an event object with details about what happened.
+
+```javascript
+btn.addEventListener("click", function(event) {
+    console.log(event.type);   // "click"
+    console.log(event.target); // the element that was clicked
+});
+
+document.addEventListener("keydown", function(event) {
+    console.log(event.key);    // "Enter", "a", "ArrowUp", etc.
+});
+
+document.addEventListener("mousemove", function(event) {
+    console.log(event.clientX, event.clientY); // cursor position
+});
+```
+
+#### Removing event listeners
+
+```javascript
+function handleClick() {
+    console.log("clicked");
+}
+
+btn.addEventListener("click", handleClick);
+btn.removeEventListener("click", handleClick); // must pass same function reference
+```
+
+#### Event delegation
+
+Instead of adding a listener to every child, add one to the parent and check which child triggered it.
+
+```javascript
+const list = document.getElementById("myList");
+
+list.addEventListener("click", function(event) {
+    if (event.target.tagName === "LI") {
+        console.log(event.target.textContent);
+    }
+});
+```
+
+Efficient — one listener handles all items, even ones added dynamically later.
+
+#### Preventing default behaviour
+
+```javascript
+// Prevent form from reloading the page on submit
+const form = document.getElementById("myForm");
+form.addEventListener("submit", function(event) {
+    event.preventDefault();
+    console.log("Form submitted without reload");
+});
+
+// Prevent link from navigating
+const link = document.querySelector("a");
+link.addEventListener("click", function(event) {
+    event.preventDefault();
+    console.log("Link click blocked");
+});
+```
+
+---
+
+### Quick reference
+
+| Task                        | Code                                              |
+|-----------------------------|---------------------------------------------------|
+| Select by id                | `document.getElementById("id")`                  |
+| Select first match          | `document.querySelector(".class")`               |
+| Select all matches          | `document.querySelectorAll(".class")`             |
+| Get text                    | `el.textContent`                                  |
+| Set text                    | `el.textContent = "text"`                         |
+| Get/set HTML                | `el.innerHTML`                                    |
+| Get input value             | `el.value`                                        |
+| Add class                   | `el.classList.add("name")`                        |
+| Remove class                | `el.classList.remove("name")`                     |
+| Toggle class                | `el.classList.toggle("name")`                     |
+| Set style                   | `el.style.property = "value"`                     |
+| Get attribute               | `el.getAttribute("attr")`                         |
+| Set attribute               | `el.setAttribute("attr", "value")`                |
+| Create element              | `document.createElement("tag")`                   |
+| Add to page                 | `parent.appendChild(el)`                          |
+| Remove from page            | `el.remove()`                                     |
+| Add event listener          | `el.addEventListener("event", fn)`                |
+| Prevent default             | `event.preventDefault()`                          |
