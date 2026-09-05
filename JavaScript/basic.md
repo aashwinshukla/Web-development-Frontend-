@@ -3461,3 +3461,283 @@ let reversed = [...nums].reverse();
 | Sort objects by property      | `arr.sort((a, b) => a.prop - b.prop)`         |
 | Sort without modifying        | `[...arr].sort(...)`                          |
 | Reverse                       | `arr.reverse()`                               |
+
+---
+
+## Dates
+
+JavaScript has a built-in `Date` object for working with dates and times.
+
+---
+
+### Creating a Date
+
+```javascript
+// Current date and time
+let now = new Date();
+console.log(now); // e.g. 2026-09-01T10:30:00.000Z
+
+// Specific date
+let d1 = new Date("2026-01-15");
+let d2 = new Date("January 15, 2026");
+let d3 = new Date(2026, 0, 15); // year, month (0-indexed), day
+
+// Specific date and time
+let d4 = new Date(2026, 0, 15, 10, 30, 0); // year, month, day, hour, min, sec
+```
+
+Month is **0-indexed** — January is `0`, December is `11`. This is a common gotcha.
+
+---
+
+### Getting date components
+
+```javascript
+let now = new Date();
+
+now.getFullYear();  // 2026
+now.getMonth();     // 0–11 (0 = January)
+now.getDate();      // 1–31 (day of the month)
+now.getDay();       // 0–6  (0 = Sunday, 6 = Saturday)
+now.getHours();     // 0–23
+now.getMinutes();   // 0–59
+now.getSeconds();   // 0–59
+now.getTime();      // milliseconds since Jan 1, 1970 (Unix timestamp)
+```
+
+---
+
+### Setting date components
+
+```javascript
+let d = new Date();
+
+d.setFullYear(2027);
+d.setMonth(11);     // December
+d.setDate(25);      // 25th
+d.setHours(9);
+d.setMinutes(0);
+```
+
+---
+
+### Formatting dates
+
+`Date` objects don't have great built-in formatting. Here are the most useful options:
+
+```javascript
+let now = new Date();
+
+now.toDateString();         // "Tue Sep 01 2026"
+now.toLocaleDateString();   // "9/1/2026" — format depends on system locale
+now.toLocaleTimeString();   // "10:30:00 AM"
+now.toLocaleString();       // "9/1/2026, 10:30:00 AM"
+now.toISOString();          // "2026-09-01T10:30:00.000Z" — standard format
+```
+
+Custom formatting using `toLocaleDateString` options:
+
+```javascript
+let now = new Date();
+
+now.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+});
+// "Tuesday, September 1, 2026"
+```
+
+---
+
+### Date arithmetic
+
+Since `.getTime()` returns milliseconds, you can do math on dates.
+
+```javascript
+let now = new Date();
+let future = new Date("2027-01-01");
+
+let diff = future.getTime() - now.getTime(); // difference in milliseconds
+
+let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+console.log(`${days} days until 2027`);
+```
+
+Breaking down the conversion:
+- `1000` ms = 1 second
+- `1000 * 60` = 1 minute
+- `1000 * 60 * 60` = 1 hour
+- `1000 * 60 * 60 * 24` = 1 day
+
+---
+
+### Comparing dates
+
+```javascript
+let d1 = new Date("2026-01-01");
+let d2 = new Date("2026-06-01");
+
+d1 < d2;   // true
+d1 > d2;   // false
+d1.getTime() === d2.getTime(); // false — use getTime() for equality
+```
+
+Never compare Date objects directly with `===` — it checks reference, not value. Use `.getTime()` for equality checks.
+
+---
+
+### Quick reference
+
+| Method                  | Returns                                    |
+|-------------------------|--------------------------------------------|
+| `new Date()`            | Current date and time                      |
+| `.getFullYear()`        | Year (e.g. 2026)                           |
+| `.getMonth()`           | Month 0–11                                 |
+| `.getDate()`            | Day of month 1–31                          |
+| `.getDay()`             | Day of week 0–6 (0 = Sunday)               |
+| `.getHours()`           | Hour 0–23                                  |
+| `.getTime()`            | Milliseconds since Jan 1 1970              |
+| `.toLocaleDateString()` | Formatted date string                      |
+| `.toISOString()`        | Standard ISO format string                 |
+
+---
+
+## Closures
+
+A closure is a function that remembers the variables from its outer scope even after that outer function has finished running.
+
+---
+
+### The basic idea
+
+```javascript
+function outer() {
+    let count = 0;
+
+    function inner() {
+        count++;
+        console.log(count);
+    }
+
+    return inner;
+}
+
+let counter = outer();
+counter(); // 1
+counter(); // 2
+counter(); // 3
+```
+
+- `outer()` runs and returns `inner`
+- `outer` is done — normally `count` would be gone
+- But `inner` still has access to `count` because it **closed over** it
+- Every time `counter()` is called, it increments and remembers the same `count`
+
+This is a closure — `inner` carries its surrounding scope with it.
+
+---
+
+### Why closures matter
+
+#### Data privacy
+
+Closures let you create private variables — values that can only be changed through specific functions, not directly from outside.
+
+```javascript
+function createCounter() {
+    let count = 0; // private — not accessible from outside
+
+    return {
+        increment() { count++; },
+        decrement() { count--; },
+        getCount()  { return count; }
+    };
+}
+
+let counter = createCounter();
+counter.increment();
+counter.increment();
+counter.increment();
+counter.decrement();
+
+console.log(counter.getCount()); // 2
+console.log(counter.count);      // undefined — can't access directly
+```
+
+#### Function factories
+
+A function that creates and returns other functions, each with their own closed-over state.
+
+```javascript
+function multiplier(factor) {
+    return n => n * factor;
+}
+
+let double = multiplier(2);
+let triple = multiplier(3);
+
+console.log(double(5));  // 10
+console.log(triple(5));  // 15
+```
+
+`double` and `triple` are two separate closures — each remembers its own `factor`.
+
+---
+
+### Closures in loops — a common gotcha
+
+```javascript
+// Problem — all timeouts print 3
+for (var i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 1000);
+}
+// 3, 3, 3 — because var is function-scoped, all callbacks share the same i
+
+// Fix 1 — use let (block-scoped, each iteration gets its own i)
+for (let i = 0; i < 3; i++) {
+    setTimeout(() => console.log(i), 1000);
+}
+// 0, 1, 2 — each callback closes over its own i
+```
+
+This is one of the main reasons `let` replaced `var` — closures in loops work as expected with `let`.
+
+---
+
+### IIFE — Immediately Invoked Function Expression
+
+A function that defines and calls itself immediately. Creates a closure to keep variables private from the global scope.
+
+```javascript
+(function() {
+    let private = "I'm not global";
+    console.log(private);
+})();
+
+console.log(private); // ReferenceError — doesn't exist outside
+```
+
+Arrow function version:
+
+```javascript
+(() => {
+    let private = "scoped";
+    console.log(private);
+})();
+```
+
+Not as common now that `let` and `const` have block scope, but you'll see IIFEs in older code.
+
+---
+
+### Quick reference
+
+| Concept            | What it means                                              |
+|--------------------|------------------------------------------------------------|
+| Closure            | A function that remembers its outer scope after the outer function finishes |
+| Data privacy       | Use closures to hide variables from outside access         |
+| Function factory   | A function that returns other functions with closed-over state |
+| Loop gotcha        | Use `let` not `var` in loops with callbacks                |
+| IIFE               | Self-invoking function that creates an isolated scope      |
