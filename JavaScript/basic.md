@@ -3309,3 +3309,155 @@ You've already seen this with string methods — `.trim().toLowerCase().replace(
 | Call parent method | `super.methodName()`                         |
 | Check instance    | `obj instanceof ClassName`                    |
 | Chain methods     | return `this` from each method                |
+
+---
+
+## Sorting
+
+Sorting was briefly touched on in the Arrays section. This covers it fully — including the quirks, the compare function, and sorting arrays of objects.
+
+---
+
+### `.sort()` — default behaviour
+
+By default, `.sort()` converts every element to a string and sorts alphabetically. This works fine for strings but breaks for numbers.
+
+```javascript
+// Strings — works as expected
+let fruits = ["banana", "apple", "mango", "cherry"];
+fruits.sort();
+console.log(fruits); // ["apple", "banana", "cherry", "mango"]
+
+// Numbers — broken
+let nums = [10, 1, 5, 3, 8, 21];
+nums.sort();
+console.log(nums); // [1, 10, 21, 3, 5, 8] — sorted as strings, not numbers
+```
+
+`10` comes before `3` because `"1"` comes before `"3"` alphabetically. Always use a compare function for numbers.
+
+---
+
+### Compare function
+
+`.sort()` accepts a callback that tells it how to order two elements `a` and `b`.
+
+The rules:
+- Return a **negative number** → `a` comes before `b`
+- Return a **positive number** → `b` comes before `a`
+- Return `0` → order stays the same
+
+```javascript
+// Ascending
+nums.sort((a, b) => a - b);
+console.log(nums); // [1, 3, 5, 8, 10, 21]
+
+// Descending
+nums.sort((a, b) => b - a);
+console.log(nums); // [21, 10, 8, 5, 3, 1]
+```
+
+`a - b` is negative when `a < b` (so `a` comes first = ascending). `b - a` flips it.
+
+---
+
+### Sorting strings explicitly
+
+```javascript
+let fruits = ["banana", "Apple", "mango", "cherry"];
+
+// Case-sensitive — uppercase letters sort before lowercase in ASCII
+fruits.sort();
+console.log(fruits); // ["Apple", "banana", "cherry", "mango"]
+
+// Case-insensitive — convert to same case before comparing
+fruits.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+console.log(fruits); // ["Apple", "banana", "cherry", "mango"] — ignores case
+```
+
+`localeCompare` is the proper way to compare strings — it handles special characters and accents correctly across languages.
+
+---
+
+### Sorting arrays of objects
+
+Sort by a specific property using the compare function.
+
+```javascript
+let students = [
+    { name: "Charlie", grade: 85 },
+    { name: "Aashwin", grade: 92 },
+    { name: "Alice",   grade: 78 },
+    { name: "Bob",     grade: 92 }
+];
+
+// Sort by grade ascending
+students.sort((a, b) => a.grade - b.grade);
+
+// Sort by grade descending
+students.sort((a, b) => b.grade - a.grade);
+
+// Sort by name alphabetically
+students.sort((a, b) => a.name.localeCompare(b.name));
+```
+
+---
+
+### Stable sort
+
+As of ES2019, JavaScript's `.sort()` is guaranteed to be **stable** — meaning elements that are equal keep their original relative order.
+
+```javascript
+// Both Aashwin and Bob have grade 92
+// After sorting by grade, Aashwin still comes before Bob
+students.sort((a, b) => b.grade - a.grade);
+// [{ Aashwin, 92 }, { Bob, 92 }, { Charlie, 85 }, { Alice, 78 }]
+```
+
+---
+
+### Sorting without modifying the original
+
+`.sort()` modifies the array in place. To sort without changing the original, use spread or `.slice()` to copy first.
+
+```javascript
+let nums = [3, 1, 4, 1, 5, 9];
+
+let sorted = [...nums].sort((a, b) => a - b);
+
+console.log(nums);   // [3, 1, 4, 1, 5, 9] — unchanged
+console.log(sorted); // [1, 1, 3, 4, 5, 9]
+```
+
+---
+
+### `.reverse()`
+
+Reverses the array in place — no sorting logic, just flips the order.
+
+```javascript
+let nums = [1, 2, 3, 4, 5];
+nums.reverse();
+console.log(nums); // [5, 4, 3, 2, 1]
+```
+
+To reverse without modifying the original:
+
+```javascript
+let reversed = [...nums].reverse();
+```
+
+---
+
+### Quick reference
+
+| Goal                          | Code                                          |
+|-------------------------------|-----------------------------------------------|
+| Sort strings A–Z              | `arr.sort()`                                  |
+| Sort strings Z–A              | `arr.sort().reverse()`                        |
+| Sort numbers ascending        | `arr.sort((a, b) => a - b)`                   |
+| Sort numbers descending       | `arr.sort((a, b) => b - a)`                   |
+| Sort strings case-insensitive | `arr.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))` |
+| Sort objects by property      | `arr.sort((a, b) => a.prop - b.prop)`         |
+| Sort without modifying        | `[...arr].sort(...)`                          |
+| Reverse                       | `arr.reverse()`                               |
