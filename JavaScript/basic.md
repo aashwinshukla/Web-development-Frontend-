@@ -4656,3 +4656,243 @@ async function fetchData() {
 | Check error type         | `error instanceof TypeError`                  |
 | Custom error class       | `class MyError extends Error {}`              |
 | Rethrow                  | `throw error` inside catch                    |
+
+---
+
+## Calculator
+
+A practical project using DOM manipulation, event handling, conditionals, error handling, and string/number conversion — all covered so far.
+
+A fully working calculator with a display, number buttons, operators, equals, clear, and backspace.
+
+### HTML
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Calculator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="calculator">
+
+      <div id="display">0</div>
+
+      <div class="buttons">
+        <button class="btn clear"    id="clearBtn">AC</button>
+        <button class="btn backspace" id="backspaceBtn">⌫</button>
+        <button class="btn operator" data-value="%">%</button>
+        <button class="btn operator" data-value="/">÷</button>
+
+        <button class="btn number"   data-value="7">7</button>
+        <button class="btn number"   data-value="8">8</button>
+        <button class="btn number"   data-value="9">9</button>
+        <button class="btn operator" data-value="*">×</button>
+
+        <button class="btn number"   data-value="4">4</button>
+        <button class="btn number"   data-value="5">5</button>
+        <button class="btn number"   data-value="6">6</button>
+        <button class="btn operator" data-value="-">−</button>
+
+        <button class="btn number"   data-value="1">1</button>
+        <button class="btn number"   data-value="2">2</button>
+        <button class="btn number"   data-value="3">3</button>
+        <button class="btn operator" data-value="+">+</button>
+
+        <button class="btn number"   data-value="0" id="zeroBtn">0</button>
+        <button class="btn number"   data-value=".">.</button>
+        <button class="btn equals"   id="equalsBtn">=</button>
+      </div>
+
+    </div>
+
+    <script src="index.js"></script>
+  </body>
+</html>
+```
+
+### CSS
+
+```css
+/* style.css */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #1a1a2e;
+}
+
+.calculator {
+    background-color: #16213e;
+    border-radius: 16px;
+    padding: 24px;
+    width: 320px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+#display {
+    background-color: #0f3460;
+    color: white;
+    font-size: 2.4rem;
+    font-family: monospace;
+    text-align: right;
+    padding: 16px 20px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    min-height: 70px;
+    word-break: break-all;
+    overflow: hidden;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.btn {
+    padding: 18px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.number, .backspace {
+    background-color: #1a1a2e;
+    color: white;
+}
+
+.operator {
+    background-color: #e94560;
+    color: white;
+}
+
+.clear {
+    background-color: #e94560;
+    color: white;
+}
+
+.equals {
+    background-color: #00ff99;
+    color: #1a1a2e;
+    font-weight: bold;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+#zeroBtn {
+    grid-column: span 2;   /* 0 button spans 2 columns */
+}
+```
+
+### JavaScript
+
+```javascript
+// index.js
+const display      = document.getElementById("display");
+const clearBtn     = document.getElementById("clearBtn");
+const backspaceBtn = document.getElementById("backspaceBtn");
+const equalsBtn    = document.getElementById("equalsBtn");
+const buttons      = document.querySelectorAll(".btn");
+
+let expression = "";
+
+function updateDisplay(value) {
+    display.textContent = value === "" ? "0" : value;
+}
+
+// Handle number and operator buttons via data-value
+buttons.forEach(btn => {
+    if (btn.dataset.value !== undefined) {
+        btn.onclick = function() {
+            // Prevent multiple decimals in the same number
+            if (btn.dataset.value === ".") {
+                const parts = expression.split(/[\+\-\*\/\%]/);
+                const lastPart = parts[parts.length - 1];
+                if (lastPart.includes(".")) return;
+            }
+
+            // Prevent starting with an operator (except minus for negatives)
+            if (["/", "*", "%"].includes(btn.dataset.value) && expression === "") return;
+
+            expression += btn.dataset.value;
+            updateDisplay(expression);
+        };
+    }
+});
+
+// Clear
+clearBtn.onclick = function() {
+    expression = "";
+    updateDisplay("");
+};
+
+// Backspace
+backspaceBtn.onclick = function() {
+    expression = expression.slice(0, -1);
+    updateDisplay(expression);
+};
+
+// Equals
+equalsBtn.onclick = function() {
+    if (expression === "") return;
+
+    try {
+        const result = Function(`"use strict"; return (${expression})`)();
+
+        if (!isFinite(result)) {
+            throw new Error("Cannot divide by zero");
+        }
+
+        expression = String(result);
+        updateDisplay(expression);
+    } catch (error) {
+        display.textContent = "Error";
+        expression = "";
+    }
+};
+```
+
+### How it works
+
+**`data-value` attributes:**
+Instead of adding an `onclick` to every button individually, each button carries its value in a `data-value` attribute. One `forEach` loop handles all of them — much cleaner than 17 separate handlers.
+
+**`document.querySelectorAll(".btn")`:**
+Selects all elements with the class `btn` and returns a NodeList. `.forEach` works on it the same way as an array.
+
+**`btn.dataset.value`:**
+Reads the `data-value` attribute from the HTML. `data-*` attributes are a standard way to store custom data on HTML elements and read them in JavaScript via `.dataset`.
+
+**Decimal guard:**
+```javascript
+const parts = expression.split(/[\+\-\*\/\%]/);
+const lastPart = parts[parts.length - 1];
+if (lastPart.includes(".")) return;
+```
+Splits the expression on any operator to isolate the current number being typed. If it already has a `.`, the button press is ignored.
+
+**Backspace with `.slice(0, -1)`:**
+Removes the last character from the expression string — same pattern from String Methods.
+
+**`Function(...)()`:**
+Evaluates the expression string as JavaScript code and returns the result. Safer than `eval()` — the `"use strict"` prevents access to the outer scope.
+
+**`isFinite(result)`:**
+Returns `false` for `Infinity` and `NaN` — catches division by zero (`10/0` gives `Infinity` in JS) and invalid expressions.
+
+**Error handling:**
+If the expression is malformed (like `5+*3`) the `Function` call throws a `SyntaxError`. The `catch` block shows `"Error"` on the display and clears the expression so the user can start fresh.
