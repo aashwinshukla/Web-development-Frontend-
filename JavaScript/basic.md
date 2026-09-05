@@ -3964,3 +3964,194 @@ seconds = Math.floor((elapsedTime % 60000) / 1000)
 - 1 minute = 60,000 ms
 - 1 second = 1,000 ms
 - `%` (modulo) removes the higher units before dividing into the smaller one
+
+---
+
+## ES6 Modules
+
+Modules let you split your JavaScript across multiple files and share code between them using `export` and `import`. Instead of one giant file, each file handles one concern and exposes only what it needs to.
+
+---
+
+### Setting up
+
+To use ES6 modules in the browser, add `type="module"` to your script tag:
+
+```html
+<script type="module" src="index.js"></script>
+```
+
+Without this, `import` and `export` won't work in the browser.
+
+---
+
+### Named exports
+
+Export specific values by name from a file.
+
+```javascript
+// math.js
+export function add(a, b) {
+    return a + b;
+}
+
+export function subtract(a, b) {
+    return a - b;
+}
+
+export const PI = 3.14159;
+```
+
+Or export everything at the bottom:
+
+```javascript
+// math.js
+function add(a, b) { return a + b; }
+function subtract(a, b) { return a - b; }
+const PI = 3.14159;
+
+export { add, subtract, PI };
+```
+
+---
+
+### Named imports
+
+Import specific exports by their exact name using `{}`.
+
+```javascript
+// index.js
+import { add, subtract, PI } from "./math.js";
+
+console.log(add(5, 3));       // 8
+console.log(subtract(10, 4)); // 6
+console.log(PI);              // 3.14159
+```
+
+The `./` means the file is in the same folder. Always include the `.js` extension in browser imports.
+
+---
+
+### Renaming imports
+
+Use `as` to rename an import — useful to avoid name conflicts.
+
+```javascript
+import { add as mathAdd, PI as mathPI } from "./math.js";
+
+console.log(mathAdd(2, 3)); // 5
+console.log(mathPI);        // 3.14159
+```
+
+---
+
+### Import everything
+
+Import all exports as a single object using `* as`.
+
+```javascript
+import * as Math from "./math.js";
+
+console.log(Math.add(2, 3));  // 5
+console.log(Math.PI);         // 3.14159
+```
+
+---
+
+### Default export
+
+Each file can have one default export — the main thing the file provides. No `{}` needed when importing.
+
+```javascript
+// greet.js
+export default function greet(name) {
+    return `Hello, ${name}!`;
+}
+```
+
+```javascript
+// index.js
+import greet from "./greet.js";
+
+console.log(greet("Aashwin")); // Hello, Aashwin!
+```
+
+You can name the default import anything you want:
+
+```javascript
+import sayHello from "./greet.js"; // also works
+```
+
+---
+
+### Default + named exports together
+
+A file can have both a default export and named exports.
+
+```javascript
+// utils.js
+export default function greet(name) {
+    return `Hello, ${name}!`;
+}
+
+export const version = "1.0";
+export function goodbye(name) {
+    return `Bye, ${name}!`;
+}
+```
+
+```javascript
+// index.js
+import greet, { version, goodbye } from "./utils.js";
+
+console.log(greet("Aashwin"));   // Hello, Aashwin!
+console.log(version);            // 1.0
+console.log(goodbye("Aashwin")); // Bye, Aashwin!
+```
+
+---
+
+### Re-exporting
+
+Forward exports from one file through another — useful for creating a single entry point.
+
+```javascript
+// index.js — acts as a barrel file
+export { add, subtract } from "./math.js";
+export { greet } from "./greet.js";
+```
+
+Now other files can import everything from one place:
+
+```javascript
+import { add, greet } from "./index.js";
+```
+
+---
+
+### Module scope
+
+Every module has its own scope. Variables declared in a module are not global — they don't leak into other files or the global `window` object.
+
+```javascript
+// module-a.js
+let secret = "only mine";  // not accessible in other files
+```
+
+This is one of the main benefits over plain `<script>` tags where everything shared the same global scope.
+
+---
+
+### Quick reference
+
+| Syntax                                  | What it does                              |
+|-----------------------------------------|-------------------------------------------|
+| `export function foo() {}`              | Named export                              |
+| `export { foo, bar }`                   | Named export at the bottom                |
+| `export default function() {}`          | Default export                            |
+| `import { foo } from "./file.js"`       | Named import                              |
+| `import { foo as f } from "./file.js"`  | Renamed import                            |
+| `import * as obj from "./file.js"`      | Import all as object                      |
+| `import foo from "./file.js"`           | Default import                            |
+| `import foo, { bar } from "./file.js"`  | Default + named import                    |
+| `export { foo } from "./file.js"`       | Re-export                                 |
